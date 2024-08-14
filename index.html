@@ -29,7 +29,7 @@
             vertical-align: middle;
         }
         button {
-            padding: 10px 20px;
+            padding: 10px 40px; /* Фиксированная ширина кнопки */
             font-size: 16px;
             margin: 0;
             border: none;
@@ -41,6 +41,12 @@
             margin-top: 20px;
             font-size: 18px;
             color: #1976D2; /* Цвет текста подписи */
+        }
+        #muteText {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #BBBBBB; /* Серый цвет для текста отключения звука */
+            cursor: pointer;
         }
         .hidden {
             display: none;
@@ -56,14 +62,12 @@
             <button id="controlBtn">
                 <span id="controlIcon">▶️</span> <span id="controlText">Start</span>
             </button>
-            <button id="muteBtn">
-                🔊
-            </button>
         </div>
+        <div id="muteText">Mute lofi radio</div>
     </div>
     <div class="label" id="chill-label" class="hidden"></div>
 
-    <audio id="radio" src="https://a7.asurahosting.com:6580/radio.mp3"></audio>
+    <audio id="radio" src="https://a7.asurahosting.com:6580/radio.mp3" volume="0.5"></audio>
 
     <script>
         let timer;
@@ -73,12 +77,14 @@
         const controlBtn = document.getElementById('controlBtn');
         const controlIcon = document.getElementById('controlIcon');
         const controlText = document.getElementById('controlText');
-        const muteBtn = document.getElementById('muteBtn');
+        const muteText = document.getElementById('muteText');
         const radio = document.getElementById('radio');
         const sessionTitle = document.getElementById('session-title');
         const chillLabel = document.getElementById('chill-label');
         let isMuted = false;
         let isChillTime = false;
+
+        radio.volume = 0.5; // Уменьшаем громкость радио на 50%
 
         function updateTimer() {
             const minutes = Math.floor(timeLeft / 60);
@@ -96,13 +102,16 @@
                 }
             }, 1000);
             radio.play();
-            controlIcon.textContent = '⏸️';
+            controlIcon.textContent = '⏹️';
             controlText.textContent = 'Stop';
         }
 
         function stopTimer() {
             clearInterval(timer);
+            timeLeft = 1500; // Сбрасываем таймер на 25 минут
+            updateTimer();
             radio.pause();
+            radio.currentTime = 0;
             controlIcon.textContent = '▶️';
             controlText.textContent = 'Start';
         }
@@ -116,7 +125,7 @@
             isChillTime = true;
             sessionTitle.textContent = 'Chill time. You can focus again in:';
             controlBtn.classList.add('hidden');
-            muteBtn.classList.add('hidden');
+            muteText.classList.add('hidden');
             chillLabel.classList.remove('hidden');
             timer = setInterval(() => {
                 chillTimeLeft--;
@@ -134,7 +143,7 @@
             isChillTime = false;
             chillLabel.classList.add('hidden');
             controlBtn.classList.remove('hidden');
-            muteBtn.classList.remove('hidden');
+            muteText.classList.remove('hidden');
             sessionTitle.textContent = '25-minute focus session';
             timeLeft = 1500;
             chillTimeLeft = 300;
@@ -149,10 +158,10 @@
             }
         });
 
-        muteBtn.addEventListener('click', () => {
+        muteText.addEventListener('click', () => {
             isMuted = !isMuted;
             radio.muted = isMuted;
-            muteBtn.textContent = isMuted ? '🔇' : '🔊';
+            muteText.textContent = isMuted ? 'Unmute lofi radio' : 'Mute lofi radio';
         });
     </script>
 
