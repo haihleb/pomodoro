@@ -17,6 +17,7 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh; /* Центрирование по вертикали */
+            overflow-y: hidden; /* Убираем вертикальную прокрутку */
         }
         #session-title {
             margin-bottom: 20px; /* Отступ снизу заголовка */
@@ -84,9 +85,6 @@
         const sessionTitle = document.getElementById('session-title');
         let isMuted = false;
         let isChillTime = false;
-
-        // Устанавливаем громкость радио на 50%
-        radio.volume = 0.5;
 
         function updateTimer() {
             const minutes = Math.floor(timeLeft / 60);
