@@ -16,11 +16,11 @@
             margin-bottom: 20px; /* Отступ снизу заголовка */
         }
         #content-block {
-            background-color: rgba(0, 136, 204, 0.5); /* Голубой цвет с прозрачностью 50% */
+            background-color: rgba(25, 118, 210, 0.5); /* Синий цвет с прозрачностью 50% */
             border-radius: 10px;
             padding: 20px;
             display: inline-block;
-            min-height: 150px; /* Фиксированная минимальная высота блока */
+            width: 300px; /* Фиксированная ширина контейнера */
         }
         #timer {
             font-size: 48px;
@@ -35,11 +35,11 @@
             border: none;
             cursor: pointer;
             color: white;
-            background-color: rgba(0, 136, 204, 0.75); /* Прозрачность кнопок 75% */
+            background-color: rgba(25, 118, 210, 0.75); /* Прозрачность кнопок 75% */
             border-radius: 5px; /* Закругленные края кнопки */
         }
         #muteText {
-            margin-top: 0px;
+            margin-top: 10px;
             font-size: 12px;
             color: #BBBBBB; /* Серый цвет для текста отключения звука */
             cursor: pointer;
@@ -47,7 +47,7 @@
         .label {
             margin-top: 20px;
             font-size: 18px;
-            color: #0088cc; /* Цвет текста подписи */
+            color: rgb(25, 118, 210); /* Цвет текста подписи */
         }
         .hidden {
             display: none;
@@ -66,12 +66,12 @@
     </div>
     <div class="label" id="chill-label" class="hidden"></div>
 
-    <audio id="radio" volume="0.5"></audio>
+    <audio id="radio"></audio>
 
     <script>
         let timer;
-        let timeLeft = 15; // 25 минут в секундах
-        const chillTimeLeft = 5; // 5 минут на отдых
+        let timeLeft = 1500; // 25 минут в секундах
+        const chillTimeLeft = 300; // 5 минут на отдых
         const timerDisplay = document.getElementById('timer');
         const controlBtn = document.getElementById('controlBtn');
         const controlIcon = document.getElementById('controlIcon');
@@ -81,6 +81,9 @@
         const sessionTitle = document.getElementById('session-title');
         let isMuted = false;
         let isChillTime = false;
+
+        // Устанавливаем громкость радио на 50%
+        radio.volume = 0.5;
 
         function updateTimer() {
             const minutes = Math.floor(timeLeft / 60);
@@ -99,7 +102,7 @@
                 }
             }, 1000);
             radio.play();
-            controlIcon.textContent = '⏹';
+            controlIcon.textContent = '⏹️';
             controlText.textContent = 'Stop';
         }
 
@@ -121,7 +124,7 @@
         function startChillTimer() {
             isChillTime = true;
             timeLeft = chillTimeLeft; // Устанавливаем 5 минут на таймер
-            sessionTitle.textContent = 'Shake up! You can focus again in:';
+            sessionTitle.textContent = 'Chill time. You can focus again in:';
             controlBtn.classList.add('hidden');
             muteText.classList.add('hidden');
             updateTimer(); // Обновляем отображение таймера сразу
@@ -137,7 +140,7 @@
 
         function resetSession() {
             isChillTime = false;
-            controlIcon.textContent = '▶';
+            controlIcon.textContent = '▶️';
             controlText.textContent = 'Start';
             controlBtn.classList.remove('hidden');
             muteText.classList.remove('hidden');
