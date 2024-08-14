@@ -6,7 +6,7 @@
     <title>25-minute focus session</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Helvetica Neue', Arial, sans-serif; /* Шрифт, как в Telegram */
             text-align: center;
             padding: 50px;
             background-color: rgb(0, 0, 0); /* Черный фон */
@@ -16,39 +16,35 @@
             display: inline-block;
             margin: 20px 0;
             padding: 10px;
-            background-color: rgba(25, 118, 210, 0.5); /* Прозрачность 50% */
+            background-color: rgba(0, 136, 204, 0.5); /* Прозрачный голубой цвет, как в Telegram */
             border-radius: 10px;
         }
         #timer {
             font-size: 48px;
             font-family: 'Baskerville', serif; /* Используем шрифт Baskerville */
-            display: inline-block;
-            margin-right: 10px;
+            margin: 20px 0; /* Отступы сверху и снизу */
         }
-        #buttons {
-            display: inline-block;
-            vertical-align: middle;
-        }
-        button {
+        #controlBtn {
             padding: 10px 40px; /* Фиксированная ширина кнопки */
             height: 48px; /* Фиксированная высота кнопки */
             font-size: 16px;
-            margin: 0;
+            margin: 20px 0; /* Отступы сверху и снизу */
             border: none;
             cursor: pointer;
             color: white;
-            background-color: rgba(25, 118, 210, 0.75); /* Прозрачность кнопок 75% */
-        }
-        .label {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #1976D2; /* Цвет текста подписи */
+            background-color: rgba(0, 136, 204, 0.75); /* Прозрачность кнопок 75% */
+            border-radius: 5px; /* Закругленные края кнопки */
         }
         #muteText {
             margin-top: 10px;
             font-size: 12px;
             color: #BBBBBB; /* Серый цвет для текста отключения звука */
             cursor: pointer;
+        }
+        .label {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #0088cc; /* Цвет текста подписи */
         }
         .hidden {
             display: none;
@@ -60,13 +56,11 @@
     <h1 id="session-title">25-minute focus session</h1>
     <div id="timer-container">
         <div id="timer">25:00</div>
-        <div id="buttons">
-            <button id="controlBtn">
-                <span id="controlText">Start</span>
-            </button>
-        </div>
-        <div id="muteText">Mute lofi radio</div>
     </div>
+    <button id="controlBtn">
+        <span id="controlText">Start</span>
+    </button>
+    <div id="muteText">Mute lofi radio</div>
     <div class="label" id="chill-label" class="hidden"></div>
 
     <audio id="radio" volume="0.5"></audio>
