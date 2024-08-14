@@ -12,16 +12,12 @@
             background-color: rgb(0, 0, 0); /* Черный фон */
             color: white; /* Белый текст */
         }
-        #timer-container {
-            display: inline-block;
-            margin: 20px 0;
-            padding: 10px;
-            background-color: rgba(0, 136, 204, 0.5); /* Прозрачный голубой цвет, как в Telegram */
-            border-radius: 10px;
+        #session-title {
+            margin-bottom: 20px; /* Отступ снизу заголовка */
         }
         #timer {
             font-size: 48px;
-            font-family: 'Baskerville', serif; /* Используем шрифт Baskerville */
+            font-family: 'Helvetica Neue', Arial, sans-serif; /* Шрифт для циферблата */
             margin: 20px 0; /* Отступы сверху и снизу */
         }
         #controlBtn {
@@ -53,22 +49,20 @@
 </head>
 <body>
 
-    <h1 id="session-title">25-minute focus session</h1>
-    <div id="timer-container">
-        <div id="timer">25:00</div>
-    </div>
-    <button id="controlBtn">
+    <h1 id="session-title">25-minute focus session</h1> <!-- Заголовок -->
+    <div id="timer">25:00</div> <!-- Таймер -->
+    <button id="controlBtn"> <!-- Кнопка управления -->
         <span id="controlText">Start</span>
     </button>
-    <div id="muteText">Mute lofi radio</div>
+    <div id="muteText">Mute lofi radio</div> <!-- Текст управления звуком -->
     <div class="label" id="chill-label" class="hidden"></div>
 
     <audio id="radio" volume="0.5"></audio>
 
     <script>
         let timer;
-        let timeLeft = 1500; // 25 минут в секундах
-        let chillTimeLeft = 300; // 5 минут на отдых
+        let timeLeft = 15; // 25 минут в секундах
+        let chillTimeLeft = 3; // 5 минут на отдых
         const timerDisplay = document.getElementById('timer');
         const controlBtn = document.getElementById('controlBtn');
         const controlText = document.getElementById('controlText');
