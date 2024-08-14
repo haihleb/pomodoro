@@ -57,7 +57,7 @@
             cursor: pointer;
         }
         #image {
-            margin-top: 50px; /* Отступ сверху для изображения */
+            margin-top: 60px; /* Отступ сверху для изображения */
             width: 100%; /* Адаптивная ширина изображения */
             max-width: 300px; /* Максимальная ширина изображения */
             height: auto; /* Адаптивная высота изображения */
@@ -95,6 +95,7 @@
         const muteText = document.getElementById('muteText');
         const radio = document.getElementById('radio');
         const sessionTitle = document.getElementById('session-title');
+        const image = document.getElementById('image'); // Получаем элемент изображения
         let isMuted = false;
         let isChillTime = false;
 
@@ -181,6 +182,11 @@
             radio.muted = isMuted;
             muteText.textContent = isMuted ? 'Unmute lofi radio' : 'Mute lofi radio';
         });
+
+        // Таймер для скрытия изображения через 3 секунды
+        setTimeout(() => {
+            image.style.display = 'none'; // Скрываем изображение
+        }, 4000);
     </script>
 
 </body>
