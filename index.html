@@ -9,24 +9,52 @@
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 50px;
+            background-color: rgb(0, 0, 0); /* Установка черного фона */
+            color: white; /* Цвет текста по умолчанию — белый */
+        }
+        #timer-container {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: rgba(25, 118, 210, 0.5); /* Блок с прозрачностью 50% */
+            border-radius: 10px;
         }
         #timer {
             font-size: 48px;
-            margin: 20px 0;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        #buttons {
+            display: inline-block;
+            vertical-align: middle;
         }
         button {
             padding: 10px 20px;
             font-size: 16px;
-            margin: 5px;
+            margin: 0;
+            border: none;
+            cursor: pointer;
+            color: white;
+            background-color: rgba(25, 118, 210, 0.75); /* Прозрачность кнопок 75% */
+        }
+        .label {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #1976D2; /* Цвет текста подписи */
         }
     </style>
 </head>
 <body>
 
     <h1>Pomodoro Timer</h1>
-    <div id="timer">25:00</div>
-    <button id="startBtn">Start</button>
-    <button id="stopBtn">Stop</button>
+    <div id="timer-container">
+        <div id="timer">25:00</div>
+        <div id="buttons">
+            <button id="startBtn">Start</button>
+            <button id="stopBtn">Stop</button>
+        </div>
+    </div>
+    <div class="label">25-minute focus session</div>
 
     <script>
         let timer;
@@ -68,3 +96,4 @@
 
 </body>
 </html>
+
