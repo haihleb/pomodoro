@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pomodoro Timer</title>
+    <title>25-minute focus session</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 50px;
-            background-color: rgb(0, 0, 0); /* Установка черного фона */
-            color: white; /* Цвет текста по умолчанию — белый */
+            background-color: rgb(0, 0, 0); /* Черный фон */
+            color: white; /* Белый текст */
         }
         #timer-container {
             display: inline-block;
             margin: 20px 0;
             padding: 10px;
-            background-color: rgba(25, 118, 210, 0.5); /* Блок с прозрачностью 50% */
+            background-color: rgba(25, 118, 210, 0.5); /* Прозрачность 50% */
             border-radius: 10px;
         }
         #timer {
@@ -42,26 +42,43 @@
             font-size: 18px;
             color: #1976D2; /* Цвет текста подписи */
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Pomodoro Timer</h1>
+    <h1 id="session-title">25-minute focus session</h1>
     <div id="timer-container">
         <div id="timer">25:00</div>
         <div id="buttons">
-            <button id="startBtn">Start</button>
-            <button id="stopBtn">Stop</button>
+            <button id="controlBtn">
+                <span id="controlIcon">▶️</span> <span id="controlText">Start</span>
+            </button>
+            <button id="muteBtn">
+                🔊
+            </button>
         </div>
     </div>
-    <div class="label">25-minute focus session</div>
+    <div class="label" id="chill-label" class="hidden"></div>
+
+    <audio id="radio" src="https://a7.asurahosting.com:6580/radio.mp3"></audio>
 
     <script>
         let timer;
         let timeLeft = 1500; // 25 минут в секундах
+        let chillTimeLeft = 300; // 5 минут на отдых
         const timerDisplay = document.getElementById('timer');
-        const startBtn = document.getElementById('startBtn');
-        const stopBtn = document.getElementById('stopBtn');
+        const controlBtn = document.getElementById('controlBtn');
+        const controlIcon = document.getElementById('controlIcon');
+        const controlText = document.getElementById('controlText');
+        const muteBtn = document.getElementById('muteBtn');
+        const radio = document.getElementById('radio');
+        const sessionTitle = document.getElementById('session-title');
+        const chillLabel = document.getElementById('chill-label');
+        let isMuted = false;
+        let isChillTime = false;
 
         function updateTimer() {
             const minutes = Math.floor(timeLeft / 60);
@@ -75,25 +92,69 @@
                 updateTimer();
                 if (timeLeft <= 0) {
                     clearInterval(timer);
-                    alert('Time\'s up!');
+                    endFocusSession();
                 }
             }, 1000);
+            radio.play();
+            controlIcon.textContent = '⏸️';
+            controlText.textContent = 'Stop';
         }
 
         function stopTimer() {
             clearInterval(timer);
+            radio.pause();
+            controlIcon.textContent = '▶️';
+            controlText.textContent = 'Start';
         }
 
-        startBtn.addEventListener('click', () => {
-            stopTimer(); // Останавливаем таймер перед запуском нового
-            timeLeft = 1500; // Сброс времени на 25 минут
+        function endFocusSession() {
+            radio.pause();
+            startChillTimer();
+        }
+
+        function startChillTimer() {
+            isChillTime = true;
+            sessionTitle.textContent = 'Chill time. You can focus again in:';
+            controlBtn.classList.add('hidden');
+            muteBtn.classList.add('hidden');
+            chillLabel.classList.remove('hidden');
+            timer = setInterval(() => {
+                chillTimeLeft--;
+                const minutes = Math.floor(chillTimeLeft / 60);
+                const seconds = chillTimeLeft % 60;
+                chillLabel.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                if (chillTimeLeft <= 0) {
+                    clearInterval(timer);
+                    resetSession();
+                }
+            }, 1000);
+        }
+
+        function resetSession() {
+            isChillTime = false;
+            chillLabel.classList.add('hidden');
+            controlBtn.classList.remove('hidden');
+            muteBtn.classList.remove('hidden');
+            sessionTitle.textContent = '25-minute focus session';
+            timeLeft = 1500;
+            chillTimeLeft = 300;
             updateTimer();
-            startTimer();
+        }
+
+        controlBtn.addEventListener('click', () => {
+            if (controlText.textContent === 'Start') {
+                startTimer();
+            } else {
+                stopTimer();
+            }
         });
 
-        stopBtn.addEventListener('click', stopTimer);
+        muteBtn.addEventListener('click', () => {
+            isMuted = !isMuted;
+            radio.muted = isMuted;
+            muteBtn.textContent = isMuted ? '🔇' : '🔊';
+        });
     </script>
 
 </body>
 </html>
-
