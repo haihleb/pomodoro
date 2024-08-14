@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pomodoro timer</title>
+    <title>👩🏼‍💻 Focus</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif; /* Шрифт, как в Telegram */
@@ -57,7 +57,7 @@
 </head>
 <body>
 
-    <h1 id="session-title">Pomodoro timer</h1> <!-- Заголовок -->
+    <h1 id="session-title">👩🏼‍💻 Focus</h1> <!-- Заголовок -->
     <div id="content-block">
         <div id="timer">25:00</div> <!-- Таймер -->
         <button id="controlBtn"> <!-- Кнопка управления -->
@@ -100,7 +100,7 @@
                 }
             }, 1000);
             radio.play();
-            //controlIcon.textContent = '⏹️';
+            controlIcon.textContent = '⏹️';
             controlText.textContent = 'Stop';
         }
 
@@ -110,7 +110,7 @@
             updateTimer();
             radio.pause();
             radio.currentTime = 0;
-            //controlIcon.textContent = '▶️';
+            controlIcon.textContent = '▶️';
             controlText.textContent = 'Start';
         }
 
@@ -123,7 +123,7 @@
             isChillTime = true;
             timeLeft = chillTimeLeft; // Устанавливаем 5 минут на таймер
             sessionTitle.textContent = '🏃‍♀️ Shake up!';
-            //controlIcon.textContent = '➡️';
+            controlIcon.textContent = '➡️';
             controlText.textContent = 'Next';
             muteText.classList.add('hidden'); // Скрываем текст Mute lofi radio
             updateTimer(); // Обновляем отображение таймера сразу
@@ -139,10 +139,10 @@
 
         function resetSession() {
             isChillTime = false;
-            //controlIcon.textContent = '▶️';
+            controlIcon.textContent = '▶️';
             controlText.textContent = 'Start';
             muteText.classList.remove('hidden'); // Возвращаем текст Mute lofi radio
-            sessionTitle.textContent = '25-minute focus session';
+            sessionTitle.textContent = '👩🏼‍💻 Focus';
             timeLeft = 1500;
             updateTimer();
         }
