@@ -15,6 +15,13 @@
         #session-title {
             margin-bottom: 20px; /* Отступ снизу заголовка */
         }
+        #content-block {
+            background-color: rgba(0, 136, 204, 0.5); /* Голубой цвет с прозрачностью 50% */
+            border-radius: 10px;
+            padding: 20px;
+            display: inline-block;
+            min-height: 150px; /* Фиксированная минимальная высота блока */
+        }
         #timer {
             font-size: 48px;
             font-family: 'Helvetica Neue', Arial, sans-serif; /* Шрифт для циферблата */
@@ -50,26 +57,28 @@
 <body>
 
     <h1 id="session-title">25-minute focus session</h1> <!-- Заголовок -->
-    <div id="timer">25:00</div> <!-- Таймер -->
-    <button id="controlBtn"> <!-- Кнопка управления -->
-        <span id="controlText">Start</span>
-    </button>
-    <div id="muteText">Mute lofi radio</div> <!-- Текст управления звуком -->
+    <div id="content-block">
+        <div id="timer">25:00</div> <!-- Таймер -->
+        <button id="controlBtn"> <!-- Кнопка управления -->
+            <span id="controlIcon">▶️</span> <span id="controlText">Start</span>
+        </button>
+        <div id="muteText">Mute lofi radio</div> <!-- Текст управления звуком -->
+    </div>
     <div class="label" id="chill-label" class="hidden"></div>
 
     <audio id="radio" volume="0.5"></audio>
 
     <script>
         let timer;
-        let timeLeft = 15; // 25 минут в секундах
-        let chillTimeLeft = 3; // 5 минут на отдых
+        let timeLeft = 1500; // 25 минут в секундах
+        const chillTimeLeft = 300; // 5 минут на отдых
         const timerDisplay = document.getElementById('timer');
         const controlBtn = document.getElementById('controlBtn');
+        const controlIcon = document.getElementById('controlIcon');
         const controlText = document.getElementById('controlText');
         const muteText = document.getElementById('muteText');
         const radio = document.getElementById('radio');
         const sessionTitle = document.getElementById('session-title');
-        const chillLabel = document.getElementById('chill-label');
         let isMuted = false;
         let isChillTime = false;
 
@@ -90,6 +99,7 @@
                 }
             }, 1000);
             radio.play();
+            controlIcon.textContent = '⏹';
             controlText.textContent = 'Stop';
         }
 
@@ -99,6 +109,7 @@
             updateTimer();
             radio.pause();
             radio.currentTime = 0;
+            controlIcon.textContent = '▶️';
             controlText.textContent = 'Start';
         }
 
@@ -109,16 +120,15 @@
 
         function startChillTimer() {
             isChillTime = true;
-            sessionTitle.textContent = 'Chill time. You can focus again in:';
+            timeLeft = chillTimeLeft; // Устанавливаем 5 минут на таймер
+            sessionTitle.textContent = 'Sake up! You can focus again in:';
             controlBtn.classList.add('hidden');
             muteText.classList.add('hidden');
-            chillLabel.classList.remove('hidden');
+            updateTimer(); // Обновляем отображение таймера сразу
             timer = setInterval(() => {
-                chillTimeLeft--;
-                const minutes = Math.floor(chillTimeLeft / 60);
-                const seconds = chillTimeLeft % 60;
-                chillLabel.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                if (chillTimeLeft <= 0) {
+                timeLeft--;
+                updateTimer();
+                if (timeLeft <= 0) {
                     clearInterval(timer);
                     resetSession();
                 }
@@ -127,12 +137,12 @@
 
         function resetSession() {
             isChillTime = false;
-            chillLabel.classList.add('hidden');
+            controlIcon.textContent = '▶️';
+            controlText.textContent = 'Start';
             controlBtn.classList.remove('hidden');
             muteText.classList.remove('hidden');
             sessionTitle.textContent = '25-minute focus session';
             timeLeft = 1500;
-            chillTimeLeft = 300;
             updateTimer();
         }
 
