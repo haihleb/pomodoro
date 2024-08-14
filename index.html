@@ -39,7 +39,7 @@
             border-radius: 5px; /* Закругленные края кнопки */
         }
         #muteText {
-            margin-top: 10px;
+            margin-top: 0px;
             font-size: 12px;
             color: #BBBBBB; /* Серый цвет для текста отключения звука */
             cursor: pointer;
@@ -121,7 +121,7 @@
         function startChillTimer() {
             isChillTime = true;
             timeLeft = chillTimeLeft; // Устанавливаем 5 минут на таймер
-            sessionTitle.textContent = 'Sake up! You can focus again in:';
+            sessionTitle.textContent = 'Shake up! You can focus again in:';
             controlBtn.classList.add('hidden');
             muteText.classList.add('hidden');
             updateTimer(); // Обновляем отображение таймера сразу
@@ -137,7 +137,7 @@
 
         function resetSession() {
             isChillTime = false;
-            controlIcon.textContent = '▶️';
+            controlIcon.textContent = '▶';
             controlText.textContent = 'Start';
             controlBtn.classList.remove('hidden');
             muteText.classList.remove('hidden');
