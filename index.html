@@ -16,15 +16,16 @@
             margin-bottom: 20px; /* Отступ снизу заголовка */
         }
         #content-block {
-            background-color: rgba(25, 118, 210, 0.5); /* Синий цвет с прозрачностью 50% */
+            background-color: rgba(25, 118, 210, 0.25); /* Синий цвет с прозрачностью 50% */
             border-radius: 10px;
             padding: 20px;
-            display: inline-block;
             width: 300px; /* Фиксированная ширина контейнера */
+            margin: 0 auto; /* Центрирует блок по горизонтали */
+            text-align: center; /* Центрирует содержимое внутри блока */
         }
         #timer {
-            font-size: 48px;
-            font-family: 'Helvetica Neue', Arial, sans-serif; /* Шрифт для циферблата */
+            font-size: 64px;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 20px 0; /* Отступы сверху и снизу */
         }
         #controlBtn {
@@ -39,7 +40,7 @@
             border-radius: 5px; /* Закругленные края кнопки */
         }
         #muteText {
-            margin-top: 10px;
+            margin-top: 0px;
             font-size: 12px;
             color: #BBBBBB; /* Серый цвет для текста отключения звука */
             cursor: pointer;
@@ -70,8 +71,8 @@
 
     <script>
         let timer;
-        let timeLeft = 1500; // 25 минут в секундах
-        const chillTimeLeft = 300; // 5 минут на отдых
+        let timeLeft = 15; // 25 минут в секундах
+        const chillTimeLeft = 5; // 5 минут на отдых
         const timerDisplay = document.getElementById('timer');
         const controlBtn = document.getElementById('controlBtn');
         const controlIcon = document.getElementById('controlIcon');
@@ -81,9 +82,6 @@
         const sessionTitle = document.getElementById('session-title');
         let isMuted = false;
         let isChillTime = false;
-
-        // Устанавливаем громкость радио на 50%
-        radio.volume = 0.5;
 
         function updateTimer() {
             const minutes = Math.floor(timeLeft / 60);
@@ -102,7 +100,7 @@
                 }
             }, 1000);
             radio.play();
-            controlIcon.textContent = '⏹️';
+            //controlIcon.textContent = '⏹️';
             controlText.textContent = 'Stop';
         }
 
@@ -112,7 +110,7 @@
             updateTimer();
             radio.pause();
             radio.currentTime = 0;
-            controlIcon.textContent = '▶️';
+            //controlIcon.textContent = '▶️';
             controlText.textContent = 'Start';
         }
 
@@ -124,9 +122,10 @@
         function startChillTimer() {
             isChillTime = true;
             timeLeft = chillTimeLeft; // Устанавливаем 5 минут на таймер
-            sessionTitle.textContent = 'Chill time. You can focus again in:';
-            controlBtn.classList.add('hidden');
-            muteText.classList.add('hidden');
+            sessionTitle.textContent = '🏃‍♀️ Shake up!';
+            //controlIcon.textContent = '➡️';
+            controlText.textContent = 'Next';
+            muteText.classList.add('hidden'); // Скрываем текст Mute lofi radio
             updateTimer(); // Обновляем отображение таймера сразу
             timer = setInterval(() => {
                 timeLeft--;
@@ -140,10 +139,9 @@
 
         function resetSession() {
             isChillTime = false;
-            controlIcon.textContent = '▶️';
+            //controlIcon.textContent = '▶️';
             controlText.textContent = 'Start';
-            controlBtn.classList.remove('hidden');
-            muteText.classList.remove('hidden');
+            muteText.classList.remove('hidden'); // Возвращаем текст Mute lofi radio
             sessionTitle.textContent = '25-minute focus session';
             timeLeft = 1500;
             updateTimer();
@@ -152,8 +150,11 @@
         controlBtn.addEventListener('click', () => {
             if (controlText.textContent === 'Start') {
                 startTimer();
-            } else {
+            } else if (controlText.textContent === 'Stop') {
                 stopTimer();
+            } else if (controlText.textContent === 'Next') {
+                clearInterval(timer); // Останавливаем текущий таймер
+                resetSession(); // Возвращаемся к 25-минутной сессии
             }
         });
 
