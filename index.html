@@ -21,6 +21,7 @@
         }
         #timer {
             font-size: 48px;
+            font-family: 'Baskerville', serif; /* Используем шрифт Baskerville */
             display: inline-block;
             margin-right: 10px;
         }
@@ -30,6 +31,7 @@
         }
         button {
             padding: 10px 40px; /* Фиксированная ширина кнопки */
+            height: 48px; /* Фиксированная высота кнопки */
             font-size: 16px;
             margin: 0;
             border: none;
@@ -60,14 +62,14 @@
         <div id="timer">25:00</div>
         <div id="buttons">
             <button id="controlBtn">
-                <span id="controlIcon">▶️</span> <span id="controlText">Start</span>
+                <span id="controlText">Start</span>
             </button>
         </div>
         <div id="muteText">Mute lofi radio</div>
     </div>
     <div class="label" id="chill-label" class="hidden"></div>
 
-    <audio id="radio" src="https://a7.asurahosting.com:6580/radio.mp3" volume="0.5"></audio>
+    <audio id="radio" volume="0.5"></audio>
 
     <script>
         let timer;
@@ -75,7 +77,6 @@
         let chillTimeLeft = 300; // 5 минут на отдых
         const timerDisplay = document.getElementById('timer');
         const controlBtn = document.getElementById('controlBtn');
-        const controlIcon = document.getElementById('controlIcon');
         const controlText = document.getElementById('controlText');
         const muteText = document.getElementById('muteText');
         const radio = document.getElementById('radio');
@@ -84,8 +85,6 @@
         let isMuted = false;
         let isChillTime = false;
 
-        radio.volume = 0.5; // Уменьшаем громкость радио на 50%
-
         function updateTimer() {
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
@@ -93,6 +92,7 @@
         }
 
         function startTimer() {
+            radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Устанавливаем источник только при старте таймера
             timer = setInterval(() => {
                 timeLeft--;
                 updateTimer();
@@ -102,7 +102,6 @@
                 }
             }, 1000);
             radio.play();
-            controlIcon.textContent = '⏹️';
             controlText.textContent = 'Stop';
         }
 
@@ -112,7 +111,6 @@
             updateTimer();
             radio.pause();
             radio.currentTime = 0;
-            controlIcon.textContent = '▶️';
             controlText.textContent = 'Start';
         }
 
