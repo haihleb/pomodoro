@@ -36,15 +36,11 @@
             text-align: center;
         }
         #timer {
-            font-size: 100px; /* Увеличенный размер шрифта для таймера */
+            font-size: 80px; /* Увеличенный размер шрифта для таймера */
             font-weight: bold; /* Сделаем цифры толще */
-            font-family: 'Courier New', Courier, monospace; /* Моноширинный шрифт */
+            font-family: 'Manrope', sans-serif;
             margin: 20px 0;
             letter-spacing: 0.05em; /* Фиксированное расстояние между символами */
-            display: flex;
-            justify-content: center; /* Центрирование таймера */
-            align-items: center;
-            width: 200px; /* Фиксированная ширина таймера */
         }
         #controlBtn {
             padding: 10px 40px;
@@ -58,7 +54,7 @@
             border-radius: 5px;
             width: 100%;
             max-width: 200px;
-            font-family: 'Manrope', sans-serif; /* Шрифт для кнопки */
+            font-family: 'Manrope', sans-serif; /* Обеспечение корректного отображения эмоджи */
         }
         #muteText {
             font-size: 12px;
@@ -105,7 +101,7 @@
     <div id="content-block">
         <div id="timer">25:00</div> <!-- Таймер начинается с фокус-сессии -->
         <button id="controlBtn">
-            <span id="controlText">Start</span>
+            <span id="controlIcon">▶️</span> <span id="controlText">Start</span>
         </button>
         <div id="muteText">Mute Lofi</div> <!-- Переименовали текст -->
         
@@ -141,6 +137,7 @@
         const maxSessions = 4; // Теперь 4 сессии для отображения
         const timerDisplay = document.getElementById('timer');
         const controlBtn = document.getElementById('controlBtn');
+        const controlIcon = document.getElementById('controlIcon');
         const controlText = document.getElementById('controlText');
         const muteText = document.getElementById('muteText');
         const radio = document.getElementById('radio');
@@ -163,7 +160,7 @@
         function startShakeUpSession() {
             clearInterval(timer); // Очищаем существующий таймер
             timeLeft = chillTimeLeft; // Устанавливаем время для Shake up!
-            sessionTitle.textContent = 'Shake up!'; // Устанавливаем заголовок
+            sessionTitle.textContent = '🏃‍♀️ Shake up!'; // Устанавливаем заголовок
             updateTimer(); // Обновляем таймер с новыми значениями
             muteText.style.visibility = 'hidden'; // Скрываем текст Mute Lofi
             shakeupSound.play(); // Включаем мелодию для Shake up! сессии
@@ -179,7 +176,7 @@
         function startFocusSession() {
             clearInterval(timer); // Очищаем существующий таймер
             timeLeft = totalFocusTime; // Устанавливаем время для фокус-сессии
-            sessionTitle.textContent = 'Focus'; // Устанавливаем заголовок
+            sessionTitle.textContent = '👩🏼‍💻 Focus'; // Устанавливаем заголовок
             updateTimer(); // Обновляем таймер с новыми значениями
             radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Включаем радио для фокус-сессии
             radio.play();
@@ -192,6 +189,7 @@
                 }
             }, 1000);
             muteText.style.visibility = 'visible'; // Показываем текст Mute Lofi
+            controlIcon.textContent = '⏹';
             controlText.textContent = 'Stop';
         }
 
@@ -202,6 +200,7 @@
             currentFocusSession = (currentFocusSession % maxSessions) + 1; // Обновление текущей сессии
             updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
             startShakeUpSession(); // Автоматический запуск Shake up! после остановки фокус-сессии
+            controlIcon.textContent = '➡';
             controlText.textContent = 'Skip';
         }
 
@@ -221,9 +220,10 @@
 
         function resetFocusSession() {
             isChillTime = false;
+            controlIcon.textContent = '▶️';
             controlText.textContent = 'Start';
             muteText.classList.remove('hidden');
-            sessionTitle.textContent = 'Focus';
+            sessionTitle.textContent = '👩🏼‍💻 Focus';
             timeLeft = totalFocusTime;
             updateTimer();
         }
