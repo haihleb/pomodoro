@@ -22,12 +22,18 @@
             overflow-y: hidden;
             transform: translateY(-1.5cm);
         }
+        #session-title,
+        #content-block,
+        #timer,
+        #controlBtn,
+        #muteText {
+            opacity: 1;
+            transition: opacity 1s ease-in-out; /* Анимация перехода для изменения видимости */
+        }
         #session-title {
             margin-bottom: 20px;
             width: 100%;
             text-align: center;
-            opacity: 1;
-            transition: opacity 1s ease-in-out; /* Анимация заголовка при смене сессий */
         }
         #content-block {
             background-color: rgba(255, 255, 255, 0.1); /* Белый цвет с прозрачностью 10% */
@@ -36,17 +42,12 @@
             width: 100%;
             max-width: 300px; /* Вернули ширину блока */
             text-align: center;
-            opacity: 1;
-            transition: opacity 1s ease-in-out; /* Анимация блока при смене сессий */
         }
         #timer {
             font-size: 80px; /* Увеличенный размер шрифта для таймера */
             font-weight: bold; /* Сделаем цифры толще */
             font-family: 'Manrope', sans-serif;
             margin: 20px 0;
-            opacity: 1;
-            transition: opacity 1s ease-in-out; /* Анимация таймера при смене сессий */
-            font-variant-numeric: tabular-nums; /* Сделаем так, чтобы точки не прыгали */
         }
         #controlBtn {
             padding: 10px 40px;
@@ -60,15 +61,11 @@
             border-radius: 5px;
             width: 100%;
             max-width: 200px;
-            opacity: 1;
-            transition: opacity 1s ease-in-out; /* Анимация кнопки при смене сессий */
         }
         #muteText {
             font-size: 12px;
             color: #BBBBBB;
             cursor: pointer;
-            opacity: 1;
-            transition: opacity 1s ease-in-out; /* Анимация текста при смене сессий */
         }
         .hidden {
             opacity: 0; /* Скрытие элемента */
@@ -177,11 +174,7 @@
         }
 
         function showElements() {
-            sessionTitle.style.transition = 'none'; // Отключаем анимацию при старте
-            timerDisplay.style.transition = 'none';
-            controlBtn.style.transition = 'none';
-            muteText.style.transition = 'none';
-
+            // Устанавливаем элементы в видимое состояние сразу
             sessionTitle.style.opacity = '1';
             timerDisplay.style.opacity = '1';
             controlBtn.style.opacity = '1';
@@ -189,13 +182,6 @@
                 muteText.style.opacity = '1';
                 muteText.classList.remove('hidden');
             }
-
-            setTimeout(() => {
-                sessionTitle.style.transition = 'opacity 1s ease-in-out'; // Включаем анимацию для следующих переходов
-                timerDisplay.style.transition = 'opacity 1s ease-in-out';
-                controlBtn.style.transition = 'opacity 1s ease-in-out';
-                muteText.style.transition = 'opacity 1s ease-in-out';
-            }, 0); // Делаем это сразу, чтобы при первом старте не было анимации
         }
 
         function hideElements(callback) {
