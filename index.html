@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Timer</title>
     <!-- Подключение шрифта Manrope -->
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap" rel="stylesheet">
-    <title>Focus Timer</title>  
     <style>
         body {
             font-family: 'Manrope', sans-serif; /* Используем шрифт Manrope */
@@ -20,7 +20,7 @@
             justify-content: center;
             min-height: 100vh;
             overflow-y: hidden;
-            transform: translateY(-3cm);
+            transform: translateY(-3.5cm);
         }
         #session-title {
             margin-bottom: 20px;
@@ -40,6 +40,7 @@
             font-weight: bold; /* Сделаем цифры толще */
             font-family: 'Manrope', sans-serif;
             margin: 20px 0;
+            letter-spacing: 0.05em; /* Фиксированное расстояние между символами */
         }
         #controlBtn {
             padding: 10px 40px;
@@ -53,6 +54,7 @@
             border-radius: 5px;
             width: 100%;
             max-width: 200px;
+            font-family: 'Manrope', sans-serif; /* Обеспечение корректного отображения эмоджи */
         }
         #muteText {
             font-size: 12px;
@@ -95,11 +97,11 @@
     </style>
 </head>
 <body>
-    <h1 id="session-title">🏃‍♀️ Shake up!</h1>
+    <h1 id="session-title">👩🏼‍💻 Focus</h1> <!-- Начало с фокус-сессии -->
     <div id="content-block">
-        <div id="timer">03:00</div> <!-- Таймер начинается с Shake up! -->
+        <div id="timer">25:00</div> <!-- Таймер начинается с фокус-сессии -->
         <button id="controlBtn">
-            <span id="controlIcon">➡️</span> <span id="controlText">Skip</span>
+            <span id="controlIcon">▶️</span> <span id="controlText">Start</span>
         </button>
         <div id="muteText">Mute Lofi</div> <!-- Переименовали текст -->
         
@@ -126,10 +128,10 @@
     <audio id="shakeup-sound" src="https://example.com/shakeup.mp3"></audio> <!-- Добавляем мелодию для Shake up! -->
     <script>
         let timer;
-        let timeLeft = 180; // Инициализация времени для предотвращения NaN:NaN
-        const chillTimeLeft = 180; // 3 минуты для Shake up! сессии
+        let timeLeft = 1500; // Инициализация времени для предотвращения NaN:NaN
+        const chillTimeLeft = 300; // 5 минут для Shake up! сессии
         const totalFocusTime = 1500; // 25 минут для фокус-сессии
-        const totalChillTime = 180; // Общая продолжительность break-сессии 3 минуты
+        const totalChillTime = 300; // Общая продолжительность break-сессии 5 минут
         let currentFocusSession = 0;
         let currentBreakSession = 0;
         const maxSessions = 4; // Теперь 4 сессии для отображения
@@ -142,7 +144,7 @@
         const shakeupSound = document.getElementById('shakeup-sound');
         const sessionTitle = document.getElementById('session-title');
         let isMuted = false;
-        let isChillTime = true; // Начинаем с Shake up! сессии
+        let isChillTime = false; // Начинаем с фокус-сессии
         // Устанавливаем громкость звуков на 50%
         radio.volume = 0.5;
         shakeupSound.volume = 0.5;
@@ -193,6 +195,7 @@
 
         function stopFocusSession() {
             clearInterval(timer);
+            radio.pause(); // Отключаем радио при остановке фокус-сессии
             const percentage = (timeLeft / totalFocusTime) * 100;
             currentFocusSession = (currentFocusSession % maxSessions) + 1; // Обновление текущей сессии
             updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
@@ -241,7 +244,7 @@
             muteText.textContent = isMuted ? 'Unmute Lofi' : 'Mute Lofi';
         });
         // Инициализация при загрузке страницы
-        startShakeUpSession(); // Автоматический запуск Shake up! сессии
+        resetFocusSession(); // Начало с фокус-сессии при загрузке страницы
     </script>
 </body>
 </html>
