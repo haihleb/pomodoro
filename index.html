@@ -20,7 +20,6 @@
             justify-content: center;
             min-height: 100vh;
             overflow-y: hidden;
-            transform: translateY(-1.5cm);
         }
         #session-title,
         #content-block,
@@ -178,10 +177,8 @@
             sessionTitle.style.opacity = '1';
             timerDisplay.style.opacity = '1';
             controlBtn.style.opacity = '1';
-            if (!isChillTime) { // Показываем текст Mute Lofi только на Focus сессиях
-                muteText.style.opacity = '1';
-                muteText.classList.remove('hidden');
-            }
+            muteText.style.opacity = '1'; // Убедимся, что текст "Mute Lofi" видим
+            muteText.classList.remove('hidden');
         }
 
         function hideElements(callback) {
@@ -191,24 +188,20 @@
             muteText.style.opacity = '0';
             setTimeout(() => {
                 // После анимации скрыть элементы
-                sessionTitle.classList.add('hidden');
-                timerDisplay.classList.add('hidden');
-                controlBtn.classList.add('hidden');
-                muteText.classList.add('hidden');
-                setTimeout(callback, 500); // Вызов callback после скрытия элементов
+                setTimeout(callback, 1000); // Вызов callback после скрытия элементов
             }, 1000);
         }
 
         function resetElementStyles() {
             // Сброс стилей анимации
+            sessionTitle.style.opacity = '1';
+            timerDisplay.style.opacity = '1';
+            controlBtn.style.opacity = '1';
+            muteText.style.opacity = '1';
             sessionTitle.classList.remove('hidden');
             timerDisplay.classList.remove('hidden');
             controlBtn.classList.remove('hidden');
             muteText.classList.remove('hidden');
-            sessionTitle.style.transition = 'opacity 1s ease-in-out';
-            timerDisplay.style.transition = 'opacity 1s ease-in-out';
-            controlBtn.style.transition = 'opacity 1s ease-in-out';
-            muteText.style.transition = 'opacity 1s ease-in-out';
         }
 
         function startShakeUpSession() {
