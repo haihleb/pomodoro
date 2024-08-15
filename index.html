@@ -238,7 +238,20 @@
                 updateTimer();
                 controlIcon.textContent = '⏹️';
                 controlText.textContent = 'Stop';
-                showElements();
+
+                // Показать элементы сразу, без анимации
+                sessionTitle.style.transition = 'none';
+                timerDisplay.style.transition = 'none';
+                controlBtn.style.transition = 'none';
+                muteText.style.transition = 'none';
+
+                sessionTitle.style.opacity = '1';
+                timerDisplay.style.opacity = '1';
+                controlBtn.style.opacity = '1';
+                if (!isChillTime) {
+                    muteText.style.opacity = '1';
+                    muteText.classList.remove('hidden');
+                }
 
                 radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Включаем радио для фокус-сессии
                 radio.play();
@@ -290,10 +303,12 @@
 
         controlBtn.addEventListener('click', () => {
             if (controlText.textContent === 'Skip') {
-                clearInterval(timer);
-                endChillSession(); // Пропуск Shake up! сессии
+                hideElements(() => { // Добавить анимацию при клике на Skip
+                    clearInterval(timer);
+                    endChillSession(); // Пропуск Shake up! сессии
+                });
             } else if (controlText.textContent === 'Start') {
-                startFocusSession();
+                startFocusSession(); // Убираем анимацию при старте сессии
             } else if (controlText.textContent === 'Stop') {
                 stopFocusSession(); // Остановка фокус-сессии и запуск Shake up!
             }
