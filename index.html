@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Focus Timer</title>
+    <!-- Подключение шрифта Manrope -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Manrope', sans-serif; /* Используем шрифт Manrope */
             text-align: center;
             padding: 20px;
             background-color: rgb(0, 0, 0); /* Черный фон */
@@ -30,12 +32,12 @@
             border-radius: 10px;
             padding: 20px;
             width: 100%;
-            max-width: 350px; /* Увеличена максимальная ширина контейнера */
+            max-width: 300px; /* Вернули ширину блока */
             text-align: center;
         }
         #timer {
             font-size: 80px; /* Увеличенный размер шрифта для таймера */
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Manrope', sans-serif;
             margin: 20px 0;
         }
         #controlBtn {
@@ -58,7 +60,7 @@
         }
         .stat-container {
             margin-top: 20px;
-            padding: 0 30px; /* Увеличены отступы справа и слева */
+            padding: 0 20px; /* Отступы справа и слева */
         }
         .stat-row {
             display: flex;
@@ -72,16 +74,17 @@
             font-size: 14px;
         }
         .stat-box {
-            width: 50px;
+            width: 60px;
             height: 20px;
             background-color: rgba(255, 255, 255, 0.3);
             border-radius: 15px; /* Еще более скругленные углы */
             position: relative;
+            overflow: hidden; /* Обрезка содержимого по границе */
         }
         .stat-fill {
             background-color: white;
             height: 100%;
-            border-radius: 15px;
+            border-radius: 15px; /* Совпадает со скруглением углов */
             width: 0; /* Начальная ширина заполнения 0% */
             position: absolute;
             top: 0;
@@ -97,7 +100,7 @@
         <button id="controlBtn">
             <span id="controlIcon">▶️</span> <span id="controlText">Start</span>
         </button>
-        <div id="muteText">Mute lofi radio</div>
+        <div id="muteText">Mute sound</div>
         
         <!-- Статистика -->
         <div class="stat-container">
@@ -107,7 +110,6 @@
                 <div class="stat-box"><div class="stat-fill" id="focus-box-2"></div></div>
                 <div class="stat-box"><div class="stat-fill" id="focus-box-3"></div></div>
                 <div class="stat-box"><div class="stat-fill" id="focus-box-4"></div></div>
-                <div class="stat-box"><div class="stat-fill" id="focus-box-5"></div></div>
             </div>
             <div class="stat-label">Breaks</div>
             <div class="stat-row" id="break-stat-row">
@@ -115,12 +117,12 @@
                 <div class="stat-box"><div class="stat-fill" id="break-box-2"></div></div>
                 <div class="stat-box"><div class="stat-fill" id="break-box-3"></div></div>
                 <div class="stat-box"><div class="stat-fill" id="break-box-4"></div></div>
-                <div class="stat-box"><div class="stat-fill" id="break-box-5"></div></div>
             </div>
         </div>
     </div>
     
     <audio id="radio"></audio>
+    <audio id="shakeup-sound" src="https://example.com/shakeup.mp3"></audio> <!-- Добавляем мелодию для Shake up! -->
 
     <script>
         let timer;
@@ -130,7 +132,7 @@
         const totalChillTime = 180; // Общая продолжительность break-сессии 3 минуты
         let currentFocusSession = 0;
         let currentBreakSession = 0;
-        const maxSessions = 5; // Максимум 5 сессий для отображения
+        const maxSessions = 4; // Теперь 4 сессии для отображения
 
         const timerDisplay = document.getElementById('timer');
         const controlBtn = document.getElementById('controlBtn');
@@ -138,12 +140,14 @@
         const controlText = document.getElementById('controlText');
         const muteText = document.getElementById('muteText');
         const radio = document.getElementById('radio');
+        const shakeupSound = document.getElementById('shakeup-sound');
         const sessionTitle = document.getElementById('session-title');
         let isMuted = false;
         let isChillTime = true; // Начинаем с Shake up! сессии
 
-        // Устанавливаем громкость радио на 50%
+        // Устанавливаем громкость звуков на 50%
         radio.volume = 0.5;
+        shakeupSound.volume = 0.5;
 
         function updateTimer() {
             const minutes = Math.floor(timeLeft / 60);
@@ -157,7 +161,13 @@
         }
 
         function startTimer() {
-            radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Устанавливаем источник только при старте таймера
+            if (isChillTime) {
+                shakeupSound.play(); // Включаем мелодию для Shake up! сессии
+            } else {
+                radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Включаем радио для фокус-сессии
+                radio.play();
+            }
+
             timer = setInterval(() => {
                 timeLeft--;
                 updateTimer();
@@ -170,7 +180,7 @@
                     }
                 }
             }, 1000);
-            radio.play();
+
             controlIcon.textContent = '⏹️';
             controlText.textContent = 'Stop';
         }
@@ -186,7 +196,9 @@
                 resetSession();
             }
             radio.pause();
+            shakeupSound.pause();
             radio.currentTime = 0;
+            shakeupSound.currentTime = 0;
             controlIcon.textContent = '▶️';
             controlText.textContent = 'Start';
         }
@@ -247,7 +259,8 @@
         muteText.addEventListener('click', () => {
             isMuted = !isMuted;
             radio.muted = isMuted;
-            muteText.textContent = isMuted ? 'Unmute lofi radio' : 'Mute lofi radio';
+            shakeupSound.muted = isMuted;
+            muteText.textContent = isMuted ? 'Unmute sound' : 'Mute sound';
         });
 
         // Инициализация при загрузке страницы
