@@ -66,6 +66,26 @@
         .hidden {
             display: none;
         }
+        .stat-container {
+            margin-top: 20px; /* Отступ сверху для статистики */
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px; /* Отступ между рядами */
+        }
+        .stat-label {
+            width: 100%;
+            text-align: left;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .stat-box {
+            width: 40px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -77,11 +97,28 @@
             <span id="controlIcon">▶️</span> <span id="controlText">Start</span>
         </button>
         <div id="muteText">Mute lofi radio</div> <!-- Текст управления звуком -->
+        
+        <!-- Статистика -->
+        <div class="stat-container">
+            <div class="stat-label">Focus sessions</div>
+            <div class="stat-row">
+                <div class="stat-box"></div>
+                <div class="stat-box"></div>
+                <div class="stat-box"></div>
+                <div class="stat-box"></div>
+                <div class="stat-box"></div>
+            </div>
+            <div class="stat-label">Breaks</div>
+            <div class="stat-row">
+                <div class="stat-box"></div>
+                <div class="stat-box"></div>
+                <div class="stat-box"></div>
+                <div class="stat-box"></div>
+                <div class="stat-box"></div>
+            </div>
+        </div>
     </div>
     
-    <!-- Добавляем ваше изображение -->
-    <img id="image" src="https://raw.githubusercontent.com/haihleb/pomodoro/main/uy.png" alt="Ваше изображение" width="100%" height="auto">
-
     <audio id="radio"></audio>
 
     <script>
@@ -95,7 +132,6 @@
         const muteText = document.getElementById('muteText');
         const radio = document.getElementById('radio');
         const sessionTitle = document.getElementById('session-title');
-        const image = document.getElementById('image'); // Получаем элемент изображения
         let isMuted = false;
         let isChillTime = false;
 
@@ -183,11 +219,4 @@
             muteText.textContent = isMuted ? 'Unmute lofi radio' : 'Mute lofi radio';
         });
 
-        // Таймер для скрытия изображения через 3 секунды
-        setTimeout(() => {
-            image.style.display = 'none'; // Скрываем изображение
-        }, 3000);
-    </script>
-
-</body>
-</html>
+        // Таймер для скрытия изображения через 3
