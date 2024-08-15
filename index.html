@@ -28,7 +28,7 @@
             text-align: center;
         }
         #content-block {
-            background-color: rgba(255, 255, 255, 0.05); /* Белый цвет с прозрачностью 50% */
+            background-color: rgba(255, 255, 255, 0.1); /* Белый цвет с прозрачностью 10% */
             border-radius: 10px;
             padding: 20px;
             width: 100%;
@@ -37,6 +37,7 @@
         }
         #timer {
             font-size: 80px; /* Увеличенный размер шрифта для таймера */
+            font-weight: bold; /* Сделаем цифры толще */
             font-family: 'Manrope', sans-serif;
             margin: 20px 0;
         }
@@ -48,7 +49,7 @@
             border: none;
             cursor: pointer;
             color: black;
-            background-color: rgba(255, 255, 255, 0.75);
+            background-color: rgba(255, 255, 255, 1); /* Убрана прозрачность кнопок */
             border-radius: 5px;
             width: 100%;
             max-width: 200px;
@@ -111,7 +112,7 @@
                 <div class="stat-box"><div class="stat-fill" id="focus-box-3"></div></div>
                 <div class="stat-box"><div class="stat-fill" id="focus-box-4"></div></div>
             </div>
-            <div class="stat-label">Shakes</div>
+            <div class="stat-label">Shakes</div> <!-- Переименовали Breaks на Shakes -->
             <div class="stat-row" id="break-stat-row">
                 <div class="stat-box"><div class="stat-fill" id="break-box-1"></div></div>
                 <div class="stat-box"><div class="stat-fill" id="break-box-2"></div></div>
@@ -196,7 +197,7 @@
                 }
             }, 1000);
 
-            controlIcon.textContent = '⏹️';
+            controlIcon.textContent = '⏹';
             controlText.textContent = 'Stop';
         }
 
@@ -206,7 +207,7 @@
             currentFocusSession = (currentFocusSession % maxSessions) + 1; // Обновление текущей сессии
             updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
             startShakeUpSession(); // Автоматический запуск Shake up! после остановки фокус-сессии
-            controlIcon.textContent = '➡️';
+            controlIcon.textContent = '➡';
             controlText.textContent = 'Skip';
         }
 
@@ -227,7 +228,7 @@
 
         function resetFocusSession() {
             isChillTime = false;
-            controlIcon.textContent = '▶️';
+            controlIcon.textContent = '▶';
             controlText.textContent = 'Start';
             muteText.classList.remove('hidden');
             sessionTitle.textContent = '👩🏼‍💻 Focus';
