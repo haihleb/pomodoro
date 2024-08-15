@@ -26,7 +26,6 @@
             margin-bottom: 20px;
             width: 100%;
             text-align: center;
-            opacity: 0;
             transition: opacity 1s ease-in-out; /* Анимация заголовка */
         }
         #content-block {
@@ -36,7 +35,6 @@
             width: 100%;
             max-width: 300px; /* Вернули ширину блока */
             text-align: center;
-            opacity: 0;
             transition: opacity 1s ease-in-out; /* Анимация блока */
         }
         #timer {
@@ -44,7 +42,6 @@
             font-weight: bold; /* Сделаем цифры толще */
             font-family: 'Manrope', sans-serif;
             margin: 20px 0;
-            opacity: 0;
             transition: opacity 1s ease-in-out; /* Анимация таймера */
             font-variant-numeric: tabular-nums; /* Сделаем так, чтобы точки не прыгали */
         }
@@ -60,14 +57,12 @@
             border-radius: 5px;
             width: 100%;
             max-width: 200px;
-            opacity: 0;
             transition: opacity 1s ease-in-out; /* Анимация кнопки */
         }
         #muteText {
             font-size: 12px;
             color: #BBBBBB;
             cursor: pointer;
-            opacity: 0;
             transition: opacity 1s ease-in-out; /* Анимация появления текста */
         }
         .hidden {
@@ -182,6 +177,7 @@
             controlBtn.style.opacity = '1';
             if (!isChillTime) { // Показываем текст Mute Lofi только на Focus сессиях
                 muteText.style.opacity = '1';
+                muteText.classList.remove('hidden');
             }
         }
 
@@ -285,7 +281,7 @@
         });
 
         // Инициализация при загрузке страницы
-        setTimeout(showElements, 1000); // Плавное появление элементов при загрузке
+        showElements(); // Плавное появление элементов при загрузке
         startShakeUpSession(); // Автоматический запуск Shake up! сессии
     </script>
 
