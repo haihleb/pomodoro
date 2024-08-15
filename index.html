@@ -28,7 +28,7 @@
             text-align: center;
         }
         #content-block {
-            background-color: rgba(255, 255, 255, 0.10); /* Белый цвет с прозрачностью 10% */
+            background-color: rgba(255, 255, 255, 0.15); /* Белый цвет с прозрачностью 50% */
             border-radius: 10px;
             padding: 20px;
             width: 100%;
@@ -126,8 +126,8 @@
 
     <script>
         let timer;
-        let timeLeft = 180; // 3 минуты для Shake up! сессии
-        const chillTimeLeft = 180; // Теперь break сессия длится 3 минуты
+        let timeLeft;
+        const chillTimeLeft = 180; // 3 минуты для Shake up! сессии
         const totalFocusTime = 1500; // 25 минут для фокус-сессии
         const totalChillTime = 180; // Общая продолжительность break-сессии 3 минуты
         let currentFocusSession = 0;
@@ -161,6 +161,8 @@
         }
 
         function startShakeUpSession() {
+            clearInterval(timer); // Очищаем существующий таймер
+            timeLeft = chillTimeLeft; // Устанавливаем время для Shake up!
             shakeupSound.play(); // Включаем мелодию для Shake up! сессии
 
             timer = setInterval(() => {
@@ -174,11 +176,11 @@
         }
 
         function startFocusSession() {
+            clearInterval(timer); // Очищаем существующий таймер
+            timeLeft = totalFocusTime; // Устанавливаем время для фокус-сессии
             radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Включаем радио для фокус-сессии
             radio.play();
 
-            timeLeft = totalFocusTime;
-            updateTimer();
             timer = setInterval(() => {
                 timeLeft--;
                 updateTimer();
@@ -192,50 +194,32 @@
             controlText.textContent = 'Stop';
         }
 
-        function stopTimer() {
+        function stopFocusSession() {
             clearInterval(timer);
-            if (isChillTime) {
-                endChillSession(); // Если остановлена break сессия
-            } else {
-                const percentage = (timeLeft / totalFocusTime) * 100;
-                currentFocusSession = (currentFocusSession % maxSessions) + 1; // Обновление текущей сессии
-                updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
-                startShakeUpSession(); // Автоматический запуск Shake up! после фокус-сессии
-            }
-            radio.pause();
-            shakeupSound.pause();
-            radio.currentTime = 0;
-            shakeupSound.currentTime = 0;
-            controlIcon.textContent = '▶️';
-            controlText.textContent = 'Start';
+            const percentage = (timeLeft / totalFocusTime) * 100;
+            currentFocusSession = (currentFocusSession % maxSessions) + 1; // Обновление текущей сессии
+            updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
+            startShakeUpSession(); // Автоматический запуск Shake up! после остановки фокус-сессии
+            controlIcon.textContent = '➡️';
+            controlText.textContent = 'Skip';
         }
 
         function endFocusSession() {
+            clearInterval(timer);
             const percentage = (timeLeft / totalFocusTime) * 100;
             currentFocusSession = (currentFocusSession % maxSessions) + 1; // Обновление текущей сессии
             updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
             startShakeUpSession(); // Автоматический запуск Shake up! после фокус-сессии
         }
 
-        function startChillTimer() {
-            isChillTime = true;
-            timeLeft = chillTimeLeft;
-            sessionTitle.textContent = '🏃‍♀️ Shake up!';
-            controlIcon.textContent = '➡️';
-            controlText.textContent = 'Skip';
-            muteText.classList.add('hidden');
-            updateTimer();
-            startShakeUpSession();
-        }
-
         function endChillSession() {
             const percentage = (timeLeft / totalChillTime) * 100;
             currentBreakSession = (currentBreakSession % maxSessions) + 1; // Обновление текущей break сессии
             updateStatBox(`break-box-${currentBreakSession}`, 100 - percentage);
-            resetSession();
+            resetFocusSession();
         }
 
-        function resetSession() {
+        function resetFocusSession() {
             isChillTime = false;
             controlIcon.textContent = '▶️';
             controlText.textContent = 'Start';
@@ -248,11 +232,11 @@
         controlBtn.addEventListener('click', () => {
             if (controlText.textContent === 'Skip') {
                 clearInterval(timer);
-                endChillSession(); // Пропуск break сессии
+                endChillSession(); // Пропуск Shake up! сессии
             } else if (controlText.textContent === 'Start') {
                 startFocusSession();
             } else if (controlText.textContent === 'Stop') {
-                stopTimer();
+                stopFocusSession(); // Остановка фокус-сессии и запуск Shake up!
             }
         });
 
