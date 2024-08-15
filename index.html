@@ -40,6 +40,7 @@
             width: 100%;
             max-width: 300px; /* Вернули ширину блока */
             text-align: center;
+            position: relative; /* Позиционирование для элемента #muteText */
         }
         #timer {
             font-size: 80px; /* Увеличенный размер шрифта для таймера */
@@ -180,16 +181,8 @@
             controlBtn.style.opacity = '0';
             muteText.style.visibility = 'hidden'; // Скрываем текст, чтобы он не занимал место
             setTimeout(() => {
-                // После анимации скрыть элементы
-                setTimeout(callback, 1000); // Вызов callback после скрытия элементов
-            }, 1000);
-        }
-
-        function resetElementStyles() {
-            sessionTitle.style.opacity = '1';
-            timerDisplay.style.opacity = '1';
-            controlBtn.style.opacity = '1';
-            muteText.style.visibility = 'visible'; // Убедимся, что текст видим
+                callback(); // Вызов callback после скрытия элементов
+            }, 1000); // Продолжительность анимации
         }
 
         function startShakeUpSession() {
@@ -260,7 +253,8 @@
             isChillTime = false;
             controlIcon.textContent = '▶️';
             controlText.textContent = 'Start';
-            muteText.classList.remove('hidden');
+            muteText.textContent = 'Mute Lofi';
+            muteText.style.visibility = 'visible'; // Показать текст, если он должен быть видим
             sessionTitle.textContent = '👩🏼‍💻 Focus';
             timeLeft = totalFocusTime;
             updateTimer();
