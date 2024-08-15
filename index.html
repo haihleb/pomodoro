@@ -57,7 +57,7 @@
             cursor: pointer;
         }
         #image {
-            margin-top: 60px; /* Отступ сверху для изображения */
+            margin-top: 20px; /* Отступ сверху для изображения */
             width: 100%; /* Адаптивная ширина изображения */
             max-width: 300px; /* Максимальная ширина изображения */
             height: auto; /* Адаптивная высота изображения */
@@ -69,6 +69,7 @@
     </style>
 </head>
 <body>
+
     <h1 id="session-title">👩🏼‍💻 Focus</h1> <!-- Заголовок для 25-минутной сессии -->
     <div id="content-block">
         <div id="timer">25:00</div> <!-- Таймер -->
@@ -80,7 +81,9 @@
     
     <!-- Добавляем ваше изображение -->
     <img id="image" src="https://raw.githubusercontent.com/haihleb/pomodoro/main/uy.png" alt="Ваше изображение" width="100%" height="auto">
+
     <audio id="radio"></audio>
+
     <script>
         let timer;
         let timeLeft = 1500; // 25 минут в секундах
@@ -95,13 +98,16 @@
         const image = document.getElementById('image'); // Получаем элемент изображения
         let isMuted = false;
         let isChillTime = false;
+
         // Устанавливаем громкость радио на 50%
         radio.volume = 0.5;
+
         function updateTimer() {
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
             timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         }
+
         function startTimer() {
             radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Устанавливаем источник только при старте таймера
             timer = setInterval(() => {
@@ -116,6 +122,7 @@
             controlIcon.textContent = '⏹️';
             controlText.textContent = 'Stop';
         }
+
         function stopTimer() {
             clearInterval(timer);
             timeLeft = 1500; // Сбрасываем таймер на 25 минут
@@ -125,10 +132,12 @@
             controlIcon.textContent = '▶️';
             controlText.textContent = 'Start';
         }
+
         function endFocusSession() {
             radio.pause();
             startChillTimer();
         }
+
         function startChillTimer() {
             isChillTime = true;
             timeLeft = chillTimeLeft; // Устанавливаем 5 минут на таймер
@@ -146,6 +155,7 @@
                 }
             }, 1000);
         }
+
         function resetSession() {
             isChillTime = false;
             controlIcon.textContent = '▶️';
@@ -155,6 +165,7 @@
             timeLeft = 1500;
             updateTimer();
         }
+
         controlBtn.addEventListener('click', () => {
             if (controlText.textContent === 'Start') {
                 startTimer();
@@ -165,16 +176,17 @@
                 resetSession(); // Возвращаемся к 25-минутной сессии
             }
         });
+
         muteText.addEventListener('click', () => {
             isMuted = !isMuted;
             radio.muted = isMuted;
             muteText.textContent = isMuted ? 'Unmute lofi radio' : 'Mute lofi radio';
         });
+
         // Таймер для скрытия изображения через 3 секунды
         setTimeout(() => {
             image.style.display = 'none'; // Скрываем изображение
-        }, 4000);
-        }, 7000);
+        }, 3000);
     </script>
 
 </body>
