@@ -26,7 +26,6 @@
             margin-bottom: 20px;
             width: 100%;
             text-align: center;
-            transition: opacity 1s ease-in-out; /* Анимация заголовка */
         }
         #content-block {
             background-color: rgba(255, 255, 255, 0.1); /* Белый цвет с прозрачностью 10% */
@@ -35,14 +34,12 @@
             width: 100%;
             max-width: 300px; /* Вернули ширину блока */
             text-align: center;
-            transition: opacity 1s ease-in-out; /* Анимация блока */
         }
         #timer {
             font-size: 80px; /* Увеличенный размер шрифта для таймера */
             font-weight: bold; /* Сделаем цифры толще */
             font-family: 'Manrope', sans-serif;
             margin: 20px 0;
-            transition: opacity 1s ease-in-out; /* Анимация таймера */
             font-variant-numeric: tabular-nums; /* Сделаем так, чтобы точки не прыгали */
         }
         #controlBtn {
@@ -57,13 +54,11 @@
             border-radius: 5px;
             width: 100%;
             max-width: 200px;
-            transition: opacity 1s ease-in-out; /* Анимация кнопки */
         }
         #muteText {
             font-size: 12px;
             color: #BBBBBB;
             cursor: pointer;
-            transition: opacity 1s ease-in-out; /* Анимация появления текста */
         }
         .hidden {
             opacity: 0; /* Скрытие элемента */
@@ -171,34 +166,34 @@
             box.style.width = `${percentage}%`;
         }
 
-        function showElements() {
-            sessionTitle.style.opacity = '1';
-            timerDisplay.style.opacity = '1';
-            controlBtn.style.opacity = '1';
-            if (!isChillTime) { // Показываем текст Mute Lofi только на Focus сессиях
-                muteText.style.opacity = '1';
-                muteText.classList.remove('hidden');
-            }
-        }
-
-        function hideElements(callback) {
+        function switchSession(title, time, icon, text, playSound = false) {
             sessionTitle.style.opacity = '0';
             timerDisplay.style.opacity = '0';
             controlBtn.style.opacity = '0';
             muteText.style.opacity = '0';
-            setTimeout(callback, 1000); // Выполнение callback после скрытия элементов
+
+            setTimeout(() => {
+                sessionTitle.textContent = title;
+                timeLeft = time;
+                updateTimer();
+                controlIcon.textContent = icon;
+                controlText.textContent = text;
+
+                sessionTitle.style.opacity = '1';
+                timerDisplay.style.opacity = '1';
+                controlBtn.style.opacity = '1';
+                if (!isChillTime) muteText.style.opacity = '1';
+
+                if (playSound) {
+                    shakeupSound.play();
+                }
+            }, 1000);
         }
 
         function startShakeUpSession() {
             clearInterval(timer); // Очищаем существующий таймер
-            timeLeft = chillTimeLeft; // Устанавливаем время для Shake up!
             isChillTime = true;
-            sessionTitle.textContent = '🏃‍♀️ Shake up!';
-            hideElements(() => {
-                updateTimer(); // Обновляем таймер с новыми значениями
-                shakeupSound.play(); // Включаем мелодию для Shake up! сессии
-                showElements();
-            });
+            switchSession('🏃‍♀️ Shake up!', chillTimeLeft, '➡️', 'Skip', true);
 
             timer = setInterval(() => {
                 timeLeft--;
@@ -212,18 +207,17 @@
 
         function startFocusSession() {
             clearInterval(timer); // Очищаем существующий таймер
-            timeLeft = totalFocusTime; // Устанавливаем время для фокус-сессии
             isChillTime = false;
-            sessionTitle.textContent = '👩🏼‍💻 Focus';
-            hideElements(() => {
-                updateTimer(); // Обновляем таймер с новыми значениями
-                radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Включаем радио для фокус-сессии
-                radio.play();
-                showElements();
-            });
+            switchSession('👩🏼‍💻 Focus', totalFocusTime, '⏹️', 'Stop');
 
-            controlIcon.textContent = '⏹️';
-            controlText.textContent = 'Stop';
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimer();
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endFocusSession();
+                }
+            }, 1000);
         }
 
         function stopFocusSession() {
@@ -233,8 +227,6 @@
             updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
             radio.pause(); // Останавливаем музыку
             startShakeUpSession(); // Автоматический запуск Shake up! после остановки фокус-сессии
-            controlIcon.textContent = '➡️';
-            controlText.textContent = 'Skip';
         }
 
         function endFocusSession() {
@@ -281,7 +273,6 @@
         });
 
         // Инициализация при загрузке страницы
-        showElements(); // Плавное появление элементов при загрузке
         startShakeUpSession(); // Автоматический запуск Shake up! сессии
     </script>
 
