@@ -26,8 +26,8 @@
             margin-bottom: 20px;
             width: 100%;
             text-align: center;
-            opacity: 1;
-            transition: opacity 2s ease-in-out; /* Анимация заголовка */
+            opacity: 0;
+            transition: opacity 1s ease-in-out; /* Анимация заголовка */
         }
         #content-block {
             background-color: rgba(255, 255, 255, 0.1); /* Белый цвет с прозрачностью 10% */
@@ -36,14 +36,16 @@
             width: 100%;
             max-width: 300px; /* Вернули ширину блока */
             text-align: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out; /* Анимация блока */
         }
         #timer {
             font-size: 80px; /* Увеличенный размер шрифта для таймера */
             font-weight: bold; /* Сделаем цифры толще */
             font-family: 'Manrope', sans-serif;
             margin: 20px 0;
-            opacity: 1;
-            transition: opacity 2s ease-in-out; /* Анимация таймера */
+            opacity: 0;
+            transition: opacity 1s ease-in-out; /* Анимация таймера */
             font-variant-numeric: tabular-nums; /* Сделаем так, чтобы точки не прыгали */
         }
         #controlBtn {
@@ -58,13 +60,15 @@
             border-radius: 5px;
             width: 100%;
             max-width: 200px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out; /* Анимация кнопки */
         }
         #muteText {
             font-size: 12px;
             color: #BBBBBB;
             cursor: pointer;
-            opacity: 1;
-            transition: opacity 2s ease-in-out; /* Анимация появления текста */
+            opacity: 0;
+            transition: opacity 1s ease-in-out; /* Анимация появления текста */
         }
         .hidden {
             opacity: 0; /* Скрытие элемента */
@@ -112,7 +116,7 @@
         <button id="controlBtn">
             <span id="controlIcon">➡️</span> <span id="controlText">Skip</span>
         </button>
-        <div id="muteText" class="hidden">Mute sound</div> <!-- Скрыт на Shake up! сессиях -->
+        <div id="muteText" class="hidden">Mute Lofi</div> <!-- Скрыт на Shake up! сессиях -->
         
         <!-- Статистика -->
         <div class="stat-container">
@@ -172,18 +176,33 @@
             box.style.width = `${percentage}%`;
         }
 
+        function showElements() {
+            sessionTitle.style.opacity = '1';
+            timerDisplay.style.opacity = '1';
+            controlBtn.style.opacity = '1';
+            if (!isChillTime) { // Показываем текст Mute Lofi только на Focus сессиях
+                muteText.style.opacity = '1';
+            }
+        }
+
+        function hideElements(callback) {
+            sessionTitle.style.opacity = '0';
+            timerDisplay.style.opacity = '0';
+            controlBtn.style.opacity = '0';
+            muteText.style.opacity = '0';
+            setTimeout(callback, 1000); // Выполнение callback после скрытия элементов
+        }
+
         function startShakeUpSession() {
             clearInterval(timer); // Очищаем существующий таймер
             timeLeft = chillTimeLeft; // Устанавливаем время для Shake up!
-            sessionTitle.textContent = '🏃‍♀️ Shake up!'; // Устанавливаем заголовок
-            timerDisplay.style.opacity = '0';
-            sessionTitle.style.opacity = '0';
-            setTimeout(() => {
+            isChillTime = true;
+            sessionTitle.textContent = '🏃‍♀️ Shake up!';
+            hideElements(() => {
                 updateTimer(); // Обновляем таймер с новыми значениями
                 shakeupSound.play(); // Включаем мелодию для Shake up! сессии
-                timerDisplay.style.opacity = '1';
-                sessionTitle.style.opacity = '1';
-            }, 2000);
+                showElements();
+            });
 
             timer = setInterval(() => {
                 timeLeft--;
@@ -198,20 +217,17 @@
         function startFocusSession() {
             clearInterval(timer); // Очищаем существующий таймер
             timeLeft = totalFocusTime; // Устанавливаем время для фокус-сессии
-            sessionTitle.textContent = '👩🏼‍💻 Focus'; // Устанавливаем заголовок
-            timerDisplay.style.opacity = '0';
-            sessionTitle.style.opacity = '0';
-            setTimeout(() => {
+            isChillTime = false;
+            sessionTitle.textContent = '👩🏼‍💻 Focus';
+            hideElements(() => {
                 updateTimer(); // Обновляем таймер с новыми значениями
                 radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Включаем радио для фокус-сессии
                 radio.play();
-                timerDisplay.style.opacity = '1';
-                sessionTitle.style.opacity = '1';
-            }, 2000);
+                showElements();
+            });
 
             controlIcon.textContent = '⏹️';
             controlText.textContent = 'Stop';
-            muteText.classList.remove('hidden'); // Показываем текст Mute/Unmute
         }
 
         function stopFocusSession() {
@@ -223,7 +239,6 @@
             startShakeUpSession(); // Автоматический запуск Shake up! после остановки фокус-сессии
             controlIcon.textContent = '➡️';
             controlText.textContent = 'Skip';
-            muteText.classList.add('hidden'); // Скрываем текст Mute/Unmute на Shake up!
         }
 
         function endFocusSession() {
@@ -233,7 +248,6 @@
             updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
             radio.pause(); // Останавливаем музыку
             startShakeUpSession(); // Автоматический запуск Shake up! после фокус-сессии
-            muteText.classList.add('hidden'); // Скрываем текст Mute/Unmute на Shake up!
         }
 
         function endChillSession() {
@@ -267,10 +281,11 @@
             isMuted = !isMuted;
             radio.muted = isMuted;
             shakeupSound.muted = isMuted;
-            muteText.textContent = isMuted ? 'Unmute sound' : 'Mute sound';
+            muteText.textContent = isMuted ? 'Unmute Lofi' : 'Mute Lofi';
         });
 
         // Инициализация при загрузке страницы
+        setTimeout(showElements, 1000); // Плавное появление элементов при загрузке
         startShakeUpSession(); // Автоматический запуск Shake up! сессии
     </script>
 
