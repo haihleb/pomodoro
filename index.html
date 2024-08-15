@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Focus Timer</title>
     <!-- Подключение шрифта Manrope -->
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap" rel="stylesheet">
+    <title>Focus Timer</title>  
     <style>
         body {
             font-family: 'Manrope', sans-serif; /* Используем шрифт Manrope */
@@ -20,7 +20,7 @@
             justify-content: center;
             min-height: 100vh;
             overflow-y: hidden;
-            transform: translateY(-1.5cm);
+            transform: translateY(-3cm);
         }
         #session-title {
             margin-bottom: 20px;
@@ -58,6 +58,7 @@
             font-size: 12px;
             color: #BBBBBB;
             cursor: pointer;
+            visibility: hidden; /* Изначально скрываем текст */
         }
         .stat-container {
             margin-top: 20px;
@@ -100,7 +101,7 @@
         <button id="controlBtn">
             <span id="controlIcon">➡️</span> <span id="controlText">Skip</span>
         </button>
-        <div id="muteText">Mute sound</div>
+        <div id="muteText">Mute Lofi</div> <!-- Переименовали текст -->
         
         <!-- Статистика -->
         <div class="stat-container">
@@ -159,6 +160,7 @@
             timeLeft = chillTimeLeft; // Устанавливаем время для Shake up!
             sessionTitle.textContent = '🏃‍♀️ Shake up!'; // Устанавливаем заголовок
             updateTimer(); // Обновляем таймер с новыми значениями
+            muteText.style.visibility = 'hidden'; // Скрываем текст Mute Lofi
             shakeupSound.play(); // Включаем мелодию для Shake up! сессии
             timer = setInterval(() => {
                 timeLeft--;
@@ -184,7 +186,7 @@
                     endFocusSession();
                 }
             }, 1000);
-
+            muteText.style.visibility = 'visible'; // Показываем текст Mute Lofi
             controlIcon.textContent = '⏹';
             controlText.textContent = 'Stop';
         }
@@ -236,7 +238,7 @@
             isMuted = !isMuted;
             radio.muted = isMuted;
             shakeupSound.muted = isMuted;
-            muteText.textContent = isMuted ? 'Unmute sound' : 'Mute sound';
+            muteText.textContent = isMuted ? 'Unmute Lofi' : 'Mute Lofi';
         });
         // Инициализация при загрузке страницы
         startShakeUpSession(); // Автоматический запуск Shake up! сессии
