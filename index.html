@@ -28,7 +28,7 @@
             text-align: center;
         }
         #content-block {
-            background-color: rgba(255, 255, 255, 0.5); /* Белый цвет с прозрачностью 50% */
+            background-color: rgba(255, 255, 255, 0.15); /* Белый цвет с прозрачностью 50% */
             border-radius: 10px;
             padding: 20px;
             width: 100%;
@@ -94,11 +94,11 @@
 </head>
 <body>
 
-    <h1 id="session-title">🏃‍♀️ Shake up!</h1> <!-- Теперь сайт начинается с Shake up! -->
+    <h1 id="session-title">🏃‍♀️ Shake up!</h1>
     <div id="content-block">
         <div id="timer">03:00</div> <!-- Таймер начинается с Shake up! -->
         <button id="controlBtn">
-            <span id="controlIcon">▶️</span> <span id="controlText">Start</span>
+            <span id="controlIcon">➡️</span> <span id="controlText">Skip</span>
         </button>
         <div id="muteText">Mute sound</div>
         
@@ -160,24 +160,31 @@
             box.style.width = `${percentage}%`;
         }
 
-        function startTimer() {
-            if (isChillTime) {
-                shakeupSound.play(); // Включаем мелодию для Shake up! сессии
-            } else {
-                radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Включаем радио для фокус-сессии
-                radio.play();
-            }
+        function startShakeUpSession() {
+            shakeupSound.play(); // Включаем мелодию для Shake up! сессии
 
             timer = setInterval(() => {
                 timeLeft--;
                 updateTimer();
                 if (timeLeft <= 0) {
                     clearInterval(timer);
-                    if (isChillTime) {
-                        endChillSession();
-                    } else {
-                        endFocusSession();
-                    }
+                    endChillSession();
+                }
+            }, 1000);
+        }
+
+        function startFocusSession() {
+            radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Включаем радио для фокус-сессии
+            radio.play();
+
+            timeLeft = totalFocusTime;
+            updateTimer();
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimer();
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endFocusSession();
                 }
             }, 1000);
 
@@ -193,7 +200,7 @@
                 const percentage = (timeLeft / totalFocusTime) * 100;
                 currentFocusSession = (currentFocusSession % maxSessions) + 1; // Обновление текущей сессии
                 updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
-                resetSession();
+                startShakeUpSession(); // Автоматический запуск Shake up! после фокус-сессии
             }
             radio.pause();
             shakeupSound.pause();
@@ -207,7 +214,7 @@
             const percentage = (timeLeft / totalFocusTime) * 100;
             currentFocusSession = (currentFocusSession % maxSessions) + 1; // Обновление текущей сессии
             updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
-            startChillTimer();
+            startShakeUpSession(); // Автоматический запуск Shake up! после фокус-сессии
         }
 
         function startChillTimer() {
@@ -215,17 +222,10 @@
             timeLeft = chillTimeLeft;
             sessionTitle.textContent = '🏃‍♀️ Shake up!';
             controlIcon.textContent = '➡️';
-            controlText.textContent = 'Next';
+            controlText.textContent = 'Skip';
             muteText.classList.add('hidden');
             updateTimer();
-            timer = setInterval(() => {
-                timeLeft--;
-                updateTimer();
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    endChillSession();
-                }
-            }, 1000);
+            startShakeUpSession();
         }
 
         function endChillSession() {
@@ -246,13 +246,13 @@
         }
 
         controlBtn.addEventListener('click', () => {
-            if (controlText.textContent === 'Start') {
-                startTimer();
-            } else if (controlText.textContent === 'Stop') {
-                stopTimer();
-            } else if (controlText.textContent === 'Next') {
+            if (controlText.textContent === 'Skip') {
                 clearInterval(timer);
                 endChillSession(); // Пропуск break сессии
+            } else if (controlText.textContent === 'Start') {
+                startFocusSession();
+            } else if (controlText.textContent === 'Stop') {
+                stopTimer();
             }
         });
 
@@ -265,6 +265,7 @@
 
         // Инициализация при загрузке страницы
         updateTimer();
+        startShakeUpSession(); // Автоматический запуск Shake up! сессии
     </script>
 
 </body>
