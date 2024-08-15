@@ -26,6 +26,8 @@
             margin-bottom: 20px;
             width: 100%;
             text-align: center;
+            opacity: 1;
+            transition: opacity 2s ease-in-out; /* Анимация заголовка */
         }
         #content-block {
             background-color: rgba(255, 255, 255, 0.1); /* Белый цвет с прозрачностью 10% */
@@ -40,6 +42,9 @@
             font-weight: bold; /* Сделаем цифры толще */
             font-family: 'Manrope', sans-serif;
             margin: 20px 0;
+            opacity: 1;
+            transition: opacity 2s ease-in-out; /* Анимация таймера */
+            font-variant-numeric: tabular-nums; /* Сделаем так, чтобы точки не прыгали */
         }
         #controlBtn {
             padding: 10px 40px;
@@ -58,6 +63,12 @@
             font-size: 12px;
             color: #BBBBBB;
             cursor: pointer;
+            opacity: 1;
+            transition: opacity 2s ease-in-out; /* Анимация появления текста */
+        }
+        .hidden {
+            opacity: 0; /* Скрытие элемента */
+            pointer-events: none; /* Отключение взаимодействия с элементом */
         }
         .stat-container {
             margin-top: 20px;
@@ -101,7 +112,7 @@
         <button id="controlBtn">
             <span id="controlIcon">➡️</span> <span id="controlText">Skip</span>
         </button>
-        <div id="muteText">Mute sound</div>
+        <div id="muteText" class="hidden">Mute sound</div> <!-- Скрыт на Shake up! сессиях -->
         
         <!-- Статистика -->
         <div class="stat-container">
@@ -165,9 +176,14 @@
             clearInterval(timer); // Очищаем существующий таймер
             timeLeft = chillTimeLeft; // Устанавливаем время для Shake up!
             sessionTitle.textContent = '🏃‍♀️ Shake up!'; // Устанавливаем заголовок
-            updateTimer(); // Обновляем таймер с новыми значениями
-
-            shakeupSound.play(); // Включаем мелодию для Shake up! сессии
+            timerDisplay.style.opacity = '0';
+            sessionTitle.style.opacity = '0';
+            setTimeout(() => {
+                updateTimer(); // Обновляем таймер с новыми значениями
+                shakeupSound.play(); // Включаем мелодию для Shake up! сессии
+                timerDisplay.style.opacity = '1';
+                sessionTitle.style.opacity = '1';
+            }, 2000);
 
             timer = setInterval(() => {
                 timeLeft--;
@@ -183,22 +199,19 @@
             clearInterval(timer); // Очищаем существующий таймер
             timeLeft = totalFocusTime; // Устанавливаем время для фокус-сессии
             sessionTitle.textContent = '👩🏼‍💻 Focus'; // Устанавливаем заголовок
-            updateTimer(); // Обновляем таймер с новыми значениями
+            timerDisplay.style.opacity = '0';
+            sessionTitle.style.opacity = '0';
+            setTimeout(() => {
+                updateTimer(); // Обновляем таймер с новыми значениями
+                radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Включаем радио для фокус-сессии
+                radio.play();
+                timerDisplay.style.opacity = '1';
+                sessionTitle.style.opacity = '1';
+            }, 2000);
 
-            radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Включаем радио для фокус-сессии
-            radio.play();
-
-            timer = setInterval(() => {
-                timeLeft--;
-                updateTimer();
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    endFocusSession();
-                }
-            }, 1000);
-
-            controlIcon.textContent = '⏹';
+            controlIcon.textContent = '⏹️';
             controlText.textContent = 'Stop';
+            muteText.classList.remove('hidden'); // Показываем текст Mute/Unmute
         }
 
         function stopFocusSession() {
@@ -206,9 +219,11 @@
             const percentage = (timeLeft / totalFocusTime) * 100;
             currentFocusSession = (currentFocusSession % maxSessions) + 1; // Обновление текущей сессии
             updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
+            radio.pause(); // Останавливаем музыку
             startShakeUpSession(); // Автоматический запуск Shake up! после остановки фокус-сессии
-            controlIcon.textContent = '➡';
+            controlIcon.textContent = '➡️';
             controlText.textContent = 'Skip';
+            muteText.classList.add('hidden'); // Скрываем текст Mute/Unmute на Shake up!
         }
 
         function endFocusSession() {
@@ -216,7 +231,9 @@
             const percentage = (timeLeft / totalFocusTime) * 100;
             currentFocusSession = (currentFocusSession % maxSessions) + 1; // Обновление текущей сессии
             updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
+            radio.pause(); // Останавливаем музыку
             startShakeUpSession(); // Автоматический запуск Shake up! после фокус-сессии
+            muteText.classList.add('hidden'); // Скрываем текст Mute/Unmute на Shake up!
         }
 
         function endChillSession() {
@@ -228,9 +245,8 @@
 
         function resetFocusSession() {
             isChillTime = false;
-            controlIcon.textContent = '▶';
+            controlIcon.textContent = '▶️';
             controlText.textContent = 'Start';
-            muteText.classList.remove('hidden');
             sessionTitle.textContent = '👩🏼‍💻 Focus';
             timeLeft = totalFocusTime;
             updateTimer();
