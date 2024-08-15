@@ -189,7 +189,26 @@
             timerDisplay.style.opacity = '0';
             controlBtn.style.opacity = '0';
             muteText.style.opacity = '0';
-            setTimeout(callback, 1000); // Выполнение callback после скрытия элементов
+            setTimeout(() => {
+                // После анимации скрыть элементы
+                sessionTitle.classList.add('hidden');
+                timerDisplay.classList.add('hidden');
+                controlBtn.classList.add('hidden');
+                muteText.classList.add('hidden');
+                setTimeout(callback, 500); // Вызов callback после скрытия элементов
+            }, 1000);
+        }
+
+        function resetElementStyles() {
+            // Сброс стилей анимации
+            sessionTitle.classList.remove('hidden');
+            timerDisplay.classList.remove('hidden');
+            controlBtn.classList.remove('hidden');
+            muteText.classList.remove('hidden');
+            sessionTitle.style.transition = 'opacity 1s ease-in-out';
+            timerDisplay.style.transition = 'opacity 1s ease-in-out';
+            controlBtn.style.transition = 'opacity 1s ease-in-out';
+            muteText.style.transition = 'opacity 1s ease-in-out';
         }
 
         function startShakeUpSession() {
@@ -197,11 +216,16 @@
             isChillTime = true;
             hideElements(() => {
                 sessionTitle.textContent = '🏃‍♀️ Shake up!';
-                timeLeft = chillTimeLeft; // Устанавливаем время для Shake up!
+                timeLeft = chillTimeLeft; // Устанавливаем время для Shake up! сессии
                 updateTimer();
-                controlIcon.textContent = '➡️';
+                controlIcon.textContent = '▶️';
                 controlText.textContent = 'Skip';
-                showElements();
+
+                // Включаем анимацию для появления элементов
+                resetElementStyles();
+                radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Включаем радио для Shake up! сессии
+                radio.play();
+
                 shakeupSound.play(); // Включаем мелодию для Shake up! сессии
 
                 timer = setInterval(() => {
@@ -226,14 +250,7 @@
                 controlText.textContent = 'Stop';
 
                 // Показать элементы сразу, без анимации
-                sessionTitle.style.transition = 'none';
-                timerDisplay.style.transition = 'none';
-                controlBtn.style.transition = 'none';
-                muteText.style.transition = 'none';
-
-                sessionTitle.style.opacity = '1';
-                timerDisplay.style.opacity = '1';
-                controlBtn.style.opacity = '1';
+                resetElementStyles();
                 if (!isChillTime) {
                     muteText.style.opacity = '1';
                     muteText.classList.remove('hidden');
