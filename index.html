@@ -30,11 +30,11 @@
             border-radius: 10px;
             padding: 20px;
             width: 100%;
-            max-width: 300px;
+            max-width: 350px; /* Увеличена максимальная ширина контейнера */
             text-align: center;
         }
         #timer {
-            font-size: 64px;
+            font-size: 80px; /* Увеличенный размер шрифта для таймера */
             font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 20px 0;
         }
@@ -58,6 +58,7 @@
         }
         .stat-container {
             margin-top: 20px;
+            padding: 0 30px; /* Увеличены отступы справа и слева */
         }
         .stat-row {
             display: flex;
@@ -74,13 +75,13 @@
             width: 50px;
             height: 20px;
             background-color: rgba(255, 255, 255, 0.3);
-            border-radius: 5px;
+            border-radius: 15px; /* Еще более скругленные углы */
             position: relative;
         }
         .stat-fill {
             background-color: white;
             height: 100%;
-            border-radius: 5px;
+            border-radius: 15px;
             width: 0; /* Начальная ширина заполнения 0% */
             position: absolute;
             top: 0;
@@ -90,9 +91,9 @@
 </head>
 <body>
 
-    <h1 id="session-title">👩🏼‍💻 Focus</h1>
+    <h1 id="session-title">🏃‍♀️ Shake up!</h1> <!-- Теперь сайт начинается с Shake up! -->
     <div id="content-block">
-        <div id="timer">25:00</div>
+        <div id="timer">03:00</div> <!-- Таймер начинается с Shake up! -->
         <button id="controlBtn">
             <span id="controlIcon">▶️</span> <span id="controlText">Start</span>
         </button>
@@ -123,10 +124,10 @@
 
     <script>
         let timer;
-        let timeLeft = 1500; // 25 минут в секундах
-        const chillTimeLeft = 300; // 5 минут на отдых
-        const totalFocusTime = 1500; // Общая продолжительность фокус-сессии (25 минут)
-        const totalChillTime = 300; // Общая продолжительность break-сессии (5 минут)
+        let timeLeft = 180; // 3 минуты для Shake up! сессии
+        const chillTimeLeft = 180; // Теперь break сессия длится 3 минуты
+        const totalFocusTime = 1500; // 25 минут для фокус-сессии
+        const totalChillTime = 180; // Общая продолжительность break-сессии 3 минуты
         let currentFocusSession = 0;
         let currentBreakSession = 0;
         const maxSessions = 5; // Максимум 5 сессий для отображения
@@ -139,7 +140,7 @@
         const radio = document.getElementById('radio');
         const sessionTitle = document.getElementById('session-title');
         let isMuted = false;
-        let isChillTime = false;
+        let isChillTime = true; // Начинаем с Shake up! сессии
 
         // Устанавливаем громкость радио на 50%
         radio.volume = 0.5;
@@ -162,7 +163,11 @@
                 updateTimer();
                 if (timeLeft <= 0) {
                     clearInterval(timer);
-                    endFocusSession();
+                    if (isChillTime) {
+                        endChillSession();
+                    } else {
+                        endFocusSession();
+                    }
                 }
             }, 1000);
             radio.play();
@@ -172,13 +177,14 @@
 
         function stopTimer() {
             clearInterval(timer);
-            const percentage = (timeLeft / totalFocusTime) * 100;
-            if (currentFocusSession < maxSessions) {
-                currentFocusSession++;
+            if (isChillTime) {
+                endChillSession(); // Если остановлена break сессия
+            } else {
+                const percentage = (timeLeft / totalFocusTime) * 100;
+                currentFocusSession = (currentFocusSession % maxSessions) + 1; // Обновление текущей сессии
                 updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
+                resetSession();
             }
-            timeLeft = totalFocusTime;
-            updateTimer();
             radio.pause();
             radio.currentTime = 0;
             controlIcon.textContent = '▶️';
@@ -187,11 +193,8 @@
 
         function endFocusSession() {
             const percentage = (timeLeft / totalFocusTime) * 100;
-            if (currentFocusSession < maxSessions) {
-                currentFocusSession++;
-                updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
-            }
-            radio.pause();
+            currentFocusSession = (currentFocusSession % maxSessions) + 1; // Обновление текущей сессии
+            updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
             startChillTimer();
         }
 
@@ -215,10 +218,8 @@
 
         function endChillSession() {
             const percentage = (timeLeft / totalChillTime) * 100;
-            if (currentBreakSession < maxSessions) {
-                currentBreakSession++;
-                updateStatBox(`break-box-${currentBreakSession}`, 100 - percentage);
-            }
+            currentBreakSession = (currentBreakSession % maxSessions) + 1; // Обновление текущей break сессии
+            updateStatBox(`break-box-${currentBreakSession}`, 100 - percentage);
             resetSession();
         }
 
@@ -248,6 +249,9 @@
             radio.muted = isMuted;
             muteText.textContent = isMuted ? 'Unmute lofi radio' : 'Mute lofi radio';
         });
+
+        // Инициализация при загрузке страницы
+        updateTimer();
     </script>
 
 </body>
