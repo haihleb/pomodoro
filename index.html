@@ -1,193 +1,100 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Focus Timer</title>
-    <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif; /* Шрифт, как в Telegram */
-            text-align: center;
-            padding: 20px;
-            background-color: rgb(0, 0, 0); /* Черный фон */
-            color: white; /* Белый текст */
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh; /* Центрирование по вертикали */
-            overflow-y: hidden; /* Убираем вертикальную прокрутку */
-            transform: translateY(-1.5cm); /* Смещаем весь контент вверх на 1,5 см */
-        }
-        #session-title {
-            margin-bottom: 20px; /* Отступ снизу заголовка */
-            width: 100%;
-            text-align: center;
-        }
-        #content-block {
-            background-color: rgba(25, 118, 210, 0.5); /* Синий цвет с прозрачностью 50% */
-            border-radius: 10px;
-            padding: 20px;
-            width: 100%;
-            max-width: 300px; /* Ограничиваем максимальную ширину контейнера */
-            text-align: center; /* Центрирует содержимое внутри блока */
-        }
-        #timer {
-            font-size: 64px; /* Увеличенный размер шрифта для таймера */
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            margin: 20px 0; /* Отступы сверху и снизу */
-        }
-        #controlBtn {
-            padding: 10px 40px; /* Фиксированная ширина кнопки */
-            height: 48px; /* Фиксированная высота кнопки */
-            font-size: 16px;
-            margin: 20px 0; /* Отступы сверху и снизу */
-            border: none;
-            cursor: pointer;
-            color: white;
-            background-color: rgba(25, 118, 210, 0.75); /* Прозрачность кнопок 75% */
-            border-radius: 5px; /* Закругленные края кнопки */
-            width: 100%;
-            max-width: 200px; /* Ограничиваем максимальную ширину кнопки */
-        }
-        #muteText {
-            font-size: 12px;
-            color: #BBBBBB; /* Серый цвет для текста отключения звука */
-            cursor: pointer;
-        }
-        #image {
-            margin-top: 60px; /* Отступ сверху для изображения */
-            width: 100%; /* Адаптивная ширина изображения */
-            max-width: 300px; /* Максимальная ширина изображения */
-            height: auto; /* Адаптивная высота изображения */
-            border-radius: 10px; /* Немного скругленные углы для изображения */
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
-</head>
-<body>
+<!--
+// v0 by Vercel.
+// https://v0.dev/t/ynhCWkyfC50
+-->
 
-    <h1 id="session-title">👩🏼‍💻 Focus</h1> <!-- Заголовок для 25-минутной сессии -->
-    <div id="content-block">
-        <div id="timer">25:00</div> <!-- Таймер -->
-        <button id="controlBtn"> <!-- Кнопка управления -->
-            <span id="controlIcon">▶️</span> <span id="controlText">Start</span>
-        </button>
-        <div id="muteText">Mute lofi radio</div> <!-- Текст управления звуком -->
+<style>:root{--background:240 5% 6%;--foreground:60 5% 90%;--primary:240 0% 90%;--primary-foreground:60 0% 0%;--secondary:240 4% 15%;--secondary-foreground:60 5% 85%;--accent:240 0% 13%;--accent-foreground:60 0% 100%;--destructive:0 60% 50%;--destructive-foreground:0 0% 98%;--muted:240 5% 25%;--muted-foreground:60 5% 85%;--card:240 4% 10%;--card-foreground:60 5% 90%;--popover:240 5% 15%;--popover-foreground:60 5% 85%;--border:240 6% 20%;--input:240 6% 20%;--ring:240 5% 90%;--chart-1:359 2% 90%;--chart-2:240 1% 74%;--chart-3:240 1% 58%;--chart-4:240 1% 42%;--chart-5:240 2% 26%;--radius:0.5rem;}img[src="/placeholder.svg"],img[src="/placeholder-user.jpg"]{filter:sepia(.3) hue-rotate(-180deg) saturate(.5) opacity(0.5) invert(.9)}</style>
+<style>h1, h2, h3, h4, h5, h6 { font-family: 'Manrope', sans-serif; --font-sans-serif: 'Manrope'; }
+</style>
+<style>body { font-family: 'Manrope', sans-serif; --font-sans-serif: 'Manrope'; }
+</style>
+<div class="flex flex-col items-center justify-center h-screen bg-background dark:bg-[#1a1b1e] px-4">
+  <div class="max-w-md w-full space-y-8">
+    <div class="text-center">
+      <h1 class="text-4xl font-bold text-foreground dark:text-white">Pomodoro Timer</h1>
+      <p class="text-muted-foreground dark:text-[#a1a1aa]">Focus on your tasks with the Pomodoro technique.</p>
     </div>
-    
-    <!-- Добавляем ваше изображение -->
-    <img id="image" src="https://raw.githubusercontent.com/haihleb/pomodoro/main/uy.png" alt="Ваше изображение" width="100%" height="auto">
-
-    <audio id="radio"></audio>
-
-    <script>
-        let timer;
-        let timeLeft = 1500; // 25 минут в секундах
-        const chillTimeLeft = 300; // 5 минут на отдых
-        const timerDisplay = document.getElementById('timer');
-        const controlBtn = document.getElementById('controlBtn');
-        const controlIcon = document.getElementById('controlIcon');
-        const controlText = document.getElementById('controlText');
-        const muteText = document.getElementById('muteText');
-        const radio = document.getElementById('radio');
-        const sessionTitle = document.getElementById('session-title');
-        const image = document.getElementById('image'); // Получаем элемент изображения
-        let isMuted = false;
-        let isChillTime = false;
-
-        // Устанавливаем громкость радио на 50%
-        radio.volume = 0.5;
-
-        function updateTimer() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        }
-
-        function startTimer() {
-            radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Устанавливаем источник только при старте таймера
-            timer = setInterval(() => {
-                timeLeft--;
-                updateTimer();
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    endFocusSession();
-                }
-            }, 1000);
-            radio.play();
-            controlIcon.textContent = '⏹️';
-            controlText.textContent = 'Stop';
-        }
-
-        function stopTimer() {
-            clearInterval(timer);
-            timeLeft = 1500; // Сбрасываем таймер на 25 минут
-            updateTimer();
-            radio.pause();
-            radio.currentTime = 0;
-            controlIcon.textContent = '▶️';
-            controlText.textContent = 'Start';
-        }
-
-        function endFocusSession() {
-            radio.pause();
-            startChillTimer();
-        }
-
-        function startChillTimer() {
-            isChillTime = true;
-            timeLeft = chillTimeLeft; // Устанавливаем 5 минут на таймер
-            sessionTitle.textContent = '🏃‍♀️ Shake up!'; // Изменяем заголовок для chill time
-            controlIcon.textContent = '➡️';
-            controlText.textContent = 'Next';
-            muteText.classList.add('hidden'); // Скрываем текст Mute lofi radio
-            updateTimer(); // Обновляем отображение таймера сразу
-            timer = setInterval(() => {
-                timeLeft--;
-                updateTimer();
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    resetSession();
-                }
-            }, 1000);
-        }
-
-        function resetSession() {
-            isChillTime = false;
-            controlIcon.textContent = '▶️';
-            controlText.textContent = 'Start';
-            muteText.classList.remove('hidden'); // Возвращаем текст Mute lofi radio
-            sessionTitle.textContent = '👩🏼‍💻 Focus'; // Возвращаем заголовок для фокус-сессии
-            timeLeft = 1500;
-            updateTimer();
-        }
-
-        controlBtn.addEventListener('click', () => {
-            if (controlText.textContent === 'Start') {
-                startTimer();
-            } else if (controlText.textContent === 'Stop') {
-                stopTimer();
-            } else if (controlText.textContent === 'Next') {
-                clearInterval(timer); // Останавливаем текущий таймер
-                resetSession(); // Возвращаемся к 25-минутной сессии
-            }
-        });
-
-        muteText.addEventListener('click', () => {
-            isMuted = !isMuted;
-            radio.muted = isMuted;
-            muteText.textContent = isMuted ? 'Unmute lofi radio' : 'Mute lofi radio';
-        });
-
-        // Таймер для скрытия изображения через 3 секунды
-        setTimeout(() => {
-            image.style.display = 'none'; // Скрываем изображение
-        }, 7000);
-    </script>
-
-</body>
-</html>
+    <div class="bg-card dark:bg-[#27292e] rounded-xl p-8 shadow-lg">
+      <div class="flex flex-col items-center justify-center space-y-8">
+        <div class="text-8xl font-bold text-primary dark:text-[#6366f1]">25:00</div>
+        <div class="flex items-center space-x-4">
+          <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 h-10">
+            Start
+          </button>
+          <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground px-4 py-2 h-10">
+            Pause
+          </button>
+          <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground px-4 py-2 h-10">
+            Reset
+          </button>
+        </div>
+      </div>
+      <div class="mt-8">
+        <div class="grid grid-cols-5 gap-2">
+          <div class="h-4 rounded-full bg-primary dark:bg-[#6366f1]"></div>
+          <div class="h-4 rounded-full bg-primary dark:bg-[#6366f1]"></div>
+          <div class="h-4 rounded-full bg-primary dark:bg-[#6366f1]"></div>
+          <div class="h-4 rounded-full bg-primary dark:bg-[#6366f1]"></div>
+          <div class="h-4 rounded-full bg-muted dark:bg-[#3f3f46] w-[80%]"></div>
+        </div>
+        <div class="mt-2 text-sm text-muted-foreground dark:text-[#a1a1aa]">
+          5 chunks, 25 min capacity per chunk, filled according to the time spent with the timer on
+        </div>
+      </div>
+      <div class="mt-8">
+        <div class="grid grid-cols-5 gap-2">
+          <div class="h-4 rounded-full bg-muted dark:bg-[#3f3f46] bg-primary dark:bg-[#6366f1]"></div>
+          <div class="h-4 rounded-full bg-muted dark:bg-[#3f3f46] bg-muted dark:bg-[#3f3f46]"></div>
+          <div class="h-4 rounded-full bg-muted dark:bg-[#3f3f46] bg-muted dark:bg-[#3f3f46]"></div>
+          <div class="h-4 rounded-full bg-muted dark:bg-[#3f3f46] bg-muted dark:bg-[#3f3f46]"></div>
+          <div class="h-4 rounded-full bg-muted dark:bg-[#3f3f46] bg-muted dark:bg-[#3f3f46]"></div>
+        </div>
+        <div class="mt-2 text-sm text-muted-foreground dark:text-[#a1a1aa]">
+          5 chunks, 5 min capacity per chunk, filled according to the time spent with the timer on
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label
+          class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block text-sm font-medium text-muted-foreground dark:text-[#a1a1aa]"
+          for="work-duration"
+        >
+          Work Duration
+        </label>
+        <div class="relative mt-1 rounded-md shadow-sm">
+          <input
+            class="h-10 border px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 block w-full rounded-md border-input bg-background dark:bg-[#27292e] text-foreground dark:text-white shadow-sm focus:border-primary focus:ring-primary"
+            id="work-duration"
+            min="1"
+            max="60"
+            type="number"
+            value="25"
+          />
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+            <span class="text-muted-foreground dark:text-[#a1a1aa]">min</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label
+          class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 block text-sm font-medium text-muted-foreground dark:text-[#a1a1aa]"
+          for="break-duration"
+        >
+          Break Duration
+        </label>
+        <div class="relative mt-1 rounded-md shadow-sm">
+          <input
+            class="h-10 border px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 block w-full rounded-md border-input bg-background dark:bg-[#27292e] text-foreground dark:text-white shadow-sm focus:border-primary focus:ring-primary"
+            id="break-duration"
+            min="1"
+            max="60"
+            type="number"
+            value="5"
+          />
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
