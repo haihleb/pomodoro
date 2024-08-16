@@ -1,11 +1,11 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
-from telegram.ext import CommandHandler, ApplicationBuilder
+from telegram.ext import CommandHandler, ApplicationBuilder, CallbackContext
 
 # Токен вашего бота
-TOKEN = '7183366630:AAFJ2oGRRkQ61Diy-hZDsrFbjCyQuO67PQ0'
+TOKEN = 'YOUR_BOT_TOKEN_HERE'
 
 # Обработчик команды /start
-async def start(update: Update, context) -> None:
+async def start(update: Update, context: CallbackContext) -> None:
     # URL вашего Pomodoro таймера
     web_app_url = "https://haihleb.github.io/pomodoro/"
     
@@ -20,8 +20,13 @@ async def start(update: Update, context) -> None:
 
 # Основная функция для запуска бота
 def main() -> None:
+    # Создаем приложение
     application = ApplicationBuilder().token(TOKEN).build()
+
+    # Добавляем обработчик команды /start
     application.add_handler(CommandHandler("start", start))
+
+    # Запускаем бота и начинаем прослушивание сообщений
     application.run_polling()
 
 if __name__ == '__main__':
