@@ -17,9 +17,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* Сдвигаем содержимое вверх */
             min-height: 100vh;
             overflow-y: hidden;
+            margin-top: -132px; /* Сдвигаем вверх на 132 пикселя */
+            padding-top: 132px; /* Добавляем padding для компенсации сдвига */
         }
         #session-title {
             margin-bottom: 20px;
