@@ -7,7 +7,7 @@ TOKEN = '7183366630:AAFJ2oGRRkQ61Diy-hZDsrFbjCyQuO67PQ0'
 # Обработчик команды /start
 async def start(update: Update, context: CallbackContext) -> None:
     # URL вашего Pomodoro таймера
-    web_app_url = "https://haihleb.github.io/pomodoro/"
+    web_app_url = "https://t.me/be_focused_bot/pomodoro"
     
     # Создаем кнопку для открытия Web App
     keyboard = [
