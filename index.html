@@ -133,10 +133,10 @@
     <audio id="shakeup-sound" src="https://example.com/shakeup.mp3"></audio> <!-- Добавляем мелодию для Shake up! -->
     <script>
         let timer;
-        let timeLeft = 15; // Инициализация времени для предотвращения NaN:NaN
-        const chillTimeLeft = 3; // 5 минут для Shake up! сессии
-        const totalFocusTime = 15; // 25 минут для фокус-сессии
-        const totalChillTime = 3; // Общая продолжительность break-сессии 5 минут
+        let timeLeft = 1500; // Инициализация времени для предотвращения NaN:NaN
+        const chillTimeLeft = 300; // 5 минут для Shake up! сессии
+        const totalFocusTime = 1500; // 25 минут для фокус-сессии
+        const totalChillTime = 300; // Общая продолжительность break-сессии 5 минут
         let currentFocusSession = 0;
         let currentBreakSession = 0;
         const maxSessions = 4; // Теперь 4 сессии для отображения
@@ -173,6 +173,8 @@
             muteText.style.visibility = 'hidden'; // Скрываем текст Mute Lofi
             shakeupSound.play(); // Включаем мелодию для Shake up! сессии
             radio.pause(); // Останавливаем радио
+            controlIcon.textContent = '➡'; // Кнопка меняется на Skip
+            controlText.textContent = 'Skip'; // Кнопка меняется на Skip
             timer = setInterval(() => {
                 timeLeft--;
                 updateTimer();
@@ -199,8 +201,8 @@
                 }
             }, 1000);
             muteText.style.visibility = 'visible'; // Показываем текст Mute Lofi
-            controlIcon.textContent = '⏹';
-            controlText.textContent = 'Stop';
+            controlIcon.textContent = '⏹'; // Кнопка меняется на Stop
+            controlText.textContent = 'Stop'; // Кнопка меняется на Stop
         }
 
         function stopFocusSession() {
@@ -210,8 +212,6 @@
             currentFocusSession = (currentFocusSession % maxSessions) + 1; // Обновление текущей сессии
             updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
             startShakeUpSession(); // Автоматический запуск Shake up! после остановки фокус-сессии
-            controlIcon.textContent = '➡';
-            controlText.textContent = 'Skip';
         }
 
         function endFocusSession() {
@@ -231,8 +231,8 @@
 
         function resetFocusSession() {
             isChillTime = false;
-            controlIcon.textContent = '▶️';
-            controlText.textContent = 'Start';
+            controlIcon.textContent = '▶️'; // Кнопка меняется на Start
+            controlText.textContent = 'Start'; // Кнопка меняется на Start
             muteText.style.visibility = 'visible'; // Показываем текст Mute Lofi
             sessionTitle.textContent = '👩🏼‍💻 Focus';
             timeLeft = totalFocusTime;
