@@ -133,11 +133,10 @@
     <audio id="shakeup-sound" src="https://example.com/shakeup.mp3"></audio> <!-- Добавляем мелодию для Shake up! -->
     <script>
         let timer;
-        let timeLeft = 15; // Инициализация времени для предотвращения NaN:NaN
-        const chillTimeLeft = 3; // 5 минут для Shake up! сессии
-        const totalFocusTime = 15; // 25 минут для фокус-сессии
-        const totalChillTime = 3
-            ; // Общая продолжительность break-сессии 5 минут
+        let timeLeft = 1500; // Инициализация времени для предотвращения NaN:NaN
+        const chillTimeLeft = 300; // 5 минут для Shake up! сессии
+        const totalFocusTime = 1500; // 25 минут для фокус-сессии
+        const totalChillTime = 300; // Общая продолжительность break-сессии 5 минут
         let currentFocusSession = 0;
         let currentBreakSession = 0;
         const maxSessions = 4; // Теперь 4 сессии для отображения
@@ -154,15 +153,18 @@
         // Устанавливаем громкость звуков на 50%
         radio.volume = 0.5;
         shakeupSound.volume = 0.5;
+
         function updateTimer() {
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
             timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         }
+
         function updateStatBox(boxId, percentage) {
             const box = document.getElementById(boxId);
             box.style.width = `${percentage}%`;
         }
+
         function startShakeUpSession() {
             clearInterval(timer); // Очищаем существующий таймер
             timeLeft = chillTimeLeft; // Устанавливаем время для Shake up!
@@ -170,6 +172,7 @@
             updateTimer(); // Обновляем таймер с новыми значениями
             muteText.style.visibility = 'hidden'; // Скрываем текст Mute Lofi
             shakeupSound.play(); // Включаем мелодию для Shake up! сессии
+            radio.pause(); // Останавливаем радио
             timer = setInterval(() => {
                 timeLeft--;
                 updateTimer();
@@ -179,6 +182,7 @@
                 }
             }, 1000);
         }
+
         function startFocusSession() {
             clearInterval(timer); // Очищаем существующий таймер
             timeLeft = totalFocusTime; // Устанавливаем время для фокус-сессии
@@ -217,6 +221,7 @@
             updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
             startShakeUpSession(); // Автоматический запуск Shake up! после фокус-сессии
         }
+
         function endChillSession() {
             const percentage = (timeLeft / totalChillTime) * 100;
             currentBreakSession = (currentBreakSession % maxSessions) + 1; // Обновление текущей break сессии
@@ -228,11 +233,12 @@
             isChillTime = false;
             controlIcon.textContent = '▶️';
             controlText.textContent = 'Start';
-            muteText.classList.remove('hidden');
+            muteText.style.visibility = 'visible'; // Показываем текст Mute Lofi
             sessionTitle.textContent = '👩🏼‍💻 Focus';
             timeLeft = totalFocusTime;
             updateTimer();
         }
+
         controlBtn.addEventListener('click', () => {
             if (controlText.textContent === 'Skip') {
                 clearInterval(timer);
@@ -243,12 +249,14 @@
                 stopFocusSession(); // Остановка фокус-сессии и запуск Shake up!
             }
         });
+
         muteText.addEventListener('click', () => {
             isMuted = !isMuted;
             radio.muted = isMuted;
             shakeupSound.muted = isMuted;
             muteText.textContent = isMuted ? 'Unmute Lofi' : 'Mute Lofi';
         });
+
         // Инициализация при загрузке страницы
         resetFocusSession(); // Начало с фокус-сессии при загрузке страницы
     </script>
