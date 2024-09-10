@@ -4,24 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Focus Timer</title>
-    <!-- Подключение шрифта Manrope -->
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Manrope', sans-serif; /* Используем шрифт Manrope */
+            font-family: 'Manrope', sans-serif;
             text-align: center;
             padding: 20px;
-            background-color: rgb(0, 0, 0); /* Черный фон */
-            color: white; /* Белый текст */
+            background-color: rgb(0, 0, 0);
+            color: white;
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Сдвигаем содержимое вверх */
+            justify-content: flex-start;
             min-height: 100vh;
             overflow-y: hidden;
-            margin-top: -132px; /* Сдвигаем вверх на 132 пикселя */
-            padding-top: 132px; /* Добавляем padding для компенсации сдвига */
+            margin-top: -132px;
+            padding-top: 132px;
         }
         #session-title {
             margin-bottom: 20px;
@@ -33,19 +32,18 @@
             text-overflow: ellipsis;
         }
         #content-block {
-            background-color: rgba(255, 255, 255, 0.1); /* Белый цвет с прозрачностью 10% */
+            background-color: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             padding: 20px;
             width: 100%;
-            max-width: 300px; /* Вернули ширину блока */
+            max-width: 300px;
             text-align: center;
         }
         #timer {
-            font-size: 80px; /* Увеличенный размер шрифта для таймера */
-            font-weight: bold; /* Сделаем цифры толще */
-            font-family: 'Manrope', sans-serif;
+            font-size: 80px;
+            font-weight: bold;
             margin: 20px 0;
-            letter-spacing: 0.05em; /* Фиксированное расстояние между символами */
+            letter-spacing: 0.05em;
         }
         #controlBtn {
             padding: 10px 40px;
@@ -55,21 +53,20 @@
             border: none;
             cursor: pointer;
             color: black;
-            background-color: rgba(255, 255, 255, 1); /* Убрана прозрачность кнопок */
+            background-color: rgba(255, 255, 255, 1);
             border-radius: 5px;
             width: 100%;
             max-width: 200px;
-            font-family: 'Manrope', sans-serif; /* Обеспечение корректного отображения эмоджи */
         }
         #muteText {
             font-size: 12px;
             color: #BBBBBB;
             cursor: pointer;
-            visibility: hidden; /* Изначально скрываем текст */
+            visibility: hidden;
         }
         .stat-container {
             margin-top: 20px;
-            padding: 0 20px; /* Отступы справа и слева */
+            padding: 0 20px;
         }
         .stat-row {
             display: flex;
@@ -86,30 +83,37 @@
             width: 60px;
             height: 20px;
             background-color: rgba(255, 255, 255, 0.3);
-            border-radius: 15px; /* Еще более скругленные углы */
+            border-radius: 15px;
             position: relative;
-            overflow: hidden; /* Обрезка содержимого по границе */
+            overflow: hidden;
         }
         .stat-fill {
             background-color: white;
             height: 100%;
-            border-radius: 15px; /* Совпадает со скруглением углов */
-            width: 0; /* Начальная ширина заполнения 0% */
+            border-radius: 15px;
+            width: 0;
             position: absolute;
             top: 0;
             left: 0;
         }
+        #shareText {
+            font-size: 16px;
+            color: #BBBBBB;
+            cursor: pointer;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <h1 id="session-title">👩🏼‍💻 Focus</h1> <!-- Начало с фокус-сессии -->
+    <h1 id="session-title">👩🏼‍💻 Focus</h1>
     <div id="content-block">
-        <div id="timer">25:00</div> <!-- Таймер начинается с фокус-сессии -->
+        <div id="timer">25:00</div>
         <button id="controlBtn">
             <span id="controlIcon">▶️</span> <span id="controlText">Start</span>
         </button>
-        <div id="muteText">Mute Lofi</div> <!-- Переименовали текст -->
-        
+        <div id="muteText">Mute Lofi</div>
+
         <!-- Статистика -->
         <div class="stat-container">
             <div class="stat-label">Focus sessions</div>
@@ -119,7 +123,7 @@
                 <div class="stat-box"><div class="stat-fill" id="focus-box-3"></div></div>
                 <div class="stat-box"><div class="stat-fill" id="focus-box-4"></div></div>
             </div>
-            <div class="stat-label">Shakes</div> <!-- Переименовали Breaks на Shakes -->
+            <div class="stat-label">Shakes</div>
             <div class="stat-row" id="break-stat-row">
                 <div class="stat-box"><div class="stat-fill" id="break-box-1"></div></div>
                 <div class="stat-box"><div class="stat-fill" id="break-box-2"></div></div>
@@ -128,18 +132,23 @@
             </div>
         </div>
     </div>
-    
+
+    <!-- Текст для открытия списка чатов -->
+    <div id="shareText">Поделиться с друзьями</div>
+
     <audio id="radio"></audio>
-    <audio id="shakeup-sound" src="https://example.com/shakeup.mp3"></audio> <!-- Добавляем мелодию для Shake up! -->
+    <audio id="shakeup-sound" src="https://example.com/shakeup.mp3"></audio>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         let timer;
         let timeLeft = 1500; // Инициализация времени для предотвращения NaN:NaN
         const chillTimeLeft = 300; // 5 минут для Shake up! сессии
-        const totalFocusTime = 1500; // 25 минут для фокус-сессии
-        const totalChillTime = 300; // Общая продолжительность break-сессии 5 минут
+        const totalFocusTime = 1500;
+        const totalChillTime = 300;
         let currentFocusSession = 0;
         let currentBreakSession = 0;
-        const maxSessions = 4; // Теперь 4 сессии для отображения
+        const maxSessions = 4;
         const timerDisplay = document.getElementById('timer');
         const controlBtn = document.getElementById('controlBtn');
         const controlIcon = document.getElementById('controlIcon');
@@ -148,45 +157,58 @@
         const radio = document.getElementById('radio');
         const shakeupSound = document.getElementById('shakeup-sound');
         const sessionTitle = document.getElementById('session-title');
+        const shareText = document.getElementById('shareText');
+        const tg = window.Telegram.WebApp;
+        
         let isMuted = false;
-        let isChillTime = false; // Начинаем с фокус-сессии
-        // Устанавливаем громкость звуков на 50%
+        let isChillTime = false;
         radio.volume = 0.5;
         shakeupSound.volume = 0.5;
+
+        // Показать Telegram интерфейс при загрузке
+        tg.ready();
+
         function updateTimer() {
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
             timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         }
-        function updateStatBox(boxId, percentage) {
-            const box = document.getElementById(boxId);
-            box.style.width = `${percentage}%`;
-        }
-        function startShakeUpSession() {
-            clearInterval(timer); // Очищаем существующий таймер
-            timeLeft = chillTimeLeft; // Устанавливаем время для Shake up!
-            sessionTitle.textContent = '🏃‍♀️ Shake up!'; // Устанавливаем заголовок
-            updateTimer(); // Обновляем таймер с новыми значениями
-            muteText.style.visibility = 'hidden'; // Скрываем текст Mute Lofi
-            shakeupSound.play(); // Включаем мелодию для Shake up! сессии
-            radio.pause(); // Останавливаем радио
-            controlIcon.textContent = '➡'; // Кнопка меняется на Skip
-            controlText.textContent = 'Skip'; // Кнопка меняется на Skip
-            timer = setInterval(() => {
-                timeLeft--;
-                updateTimer();
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    endChillSession();
-                }
-            }, 1000);
-        }
+
+        // Поделиться с друзьями
+        shareText.addEventListener('click', () => {
+            tg.showShareMenu({
+                message: "Присоединяйтесь к моему Pomodoro таймеру!",
+                disable_notification: false
+            });
+        });
+
+        controlBtn.addEventListener('click', () => {
+            if (controlText.textContent === 'Skip') {
+                clearInterval(timer);
+                endChillSession(); // Пропуск Shake up! сессии
+            } else if (controlText.textContent === 'Start') {
+                startFocusSession();
+            } else if (controlText.textContent === 'Stop') {
+                stopFocusSession();
+            }
+        });
+
+        muteText.addEventListener('click', () => {
+            isMuted = !isMuted;
+            radio.muted = isMuted;
+            shakeupSound.muted = isMuted;
+            muteText.textContent = isMuted ? 'Unmute Lofi' : 'Mute Lofi';
+        });
+
+        // Инициализация при загрузке страницы
+        resetFocusSession(); 
+
         function startFocusSession() {
-            clearInterval(timer); // Очищаем существующий таймер
-            timeLeft = totalFocusTime; // Устанавливаем время для фокус-сессии
-            sessionTitle.textContent = '👩🏼‍💻 Focus'; // Устанавливаем заголовок
-            updateTimer(); // Обновляем таймер с новыми значениями
-            radio.src = "https://a7.asurahosting.com:6580/radio.mp3"; // Включаем радио для фокус-сессии
+            clearInterval(timer);
+            timeLeft = totalFocusTime;
+            sessionTitle.textContent = '👩🏼‍💻 Focus';
+            updateTimer();
+            radio.src = "https://a7.asurahosting.com:6580/radio.mp3";
             radio.play();
             timer = setInterval(() => {
                 timeLeft--;
@@ -196,58 +218,34 @@
                     endFocusSession();
                 }
             }, 1000);
-            muteText.style.visibility = 'visible'; // Показываем текст Mute Lofi
-            controlIcon.textContent = '⏹'; // Кнопка меняется на Stop
-            controlText.textContent = 'Stop'; // Кнопка меняется на Stop
+            muteText.style.visibility = 'visible';
+            controlIcon.textContent = '⏹';
+            controlText.textContent = 'Stop';
         }
+
         function stopFocusSession() {
             clearInterval(timer);
-            radio.pause(); // Отключаем радио при остановке фокус-сессии
+            radio.pause();
             const percentage = (timeLeft / totalFocusTime) * 100;
-            currentFocusSession = (currentFocusSession % maxSessions) + 1; // Обновление текущей сессии
+            currentFocusSession = (currentFocusSession % maxSessions) + 1;
             updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
-            startShakeUpSession(); // Автоматический запуск Shake up! после остановки фокус-сессии
+            startShakeUpSession();
         }
-        function endFocusSession() {
-            clearInterval(timer);
-            const percentage = (timeLeft / totalFocusTime) * 100;
-            currentFocusSession = (currentFocusSession % maxSessions) + 1; // Обновление текущей сессии
-            updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
-            startShakeUpSession(); // Автоматический запуск Shake up! после фокус-сессии
+
+        function updateStatBox(boxId, percentage) {
+            const box = document.getElementById(boxId);
+            box.style.width = `${percentage}%`;
         }
-        function endChillSession() {
-            const percentage = (timeLeft / totalChillTime) * 100;
-            currentBreakSession = (currentBreakSession % maxSessions) + 1; // Обновление текущей break сессии
-            updateStatBox(`break-box-${currentBreakSession}`, 100 - percentage);
-            resetFocusSession();
-        }
+
         function resetFocusSession() {
             isChillTime = false;
-            controlIcon.textContent = '▶️'; // Кнопка меняется на Start
-            controlText.textContent = 'Start'; // Кнопка меняется на Start
-            muteText.style.visibility = 'visible'; // Показываем текст Mute Lofi
+            controlIcon.textContent = '▶️';
+            controlText.textContent = 'Start';
+            muteText.style.visibility = 'visible';
             sessionTitle.textContent = '👩🏼‍💻 Focus';
             timeLeft = totalFocusTime;
             updateTimer();
         }
-        controlBtn.addEventListener('click', () => {
-            if (controlText.textContent === 'Skip') {
-                clearInterval(timer);
-                endChillSession(); // Пропуск Shake up! сессии
-            } else if (controlText.textContent === 'Start') {
-                startFocusSession();
-            } else if (controlText.textContent === 'Stop') {
-                stopFocusSession(); // Остановка фокус-сессии и запуск Shake up!
-            }
-        });
-        muteText.addEventListener('click', () => {
-            isMuted = !isMuted;
-            radio.muted = isMuted;
-            shakeupSound.muted = isMuted;
-            muteText.textContent = isMuted ? 'Unmute Lofi' : 'Mute Lofi';
-        });
-        // Инициализация при загрузке страницы
-        resetFocusSession(); // Начало с фокус-сессии при загрузке страницы
     </script>
 </body>
 </html>
