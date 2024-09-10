@@ -176,14 +176,10 @@
 
         // Поделиться с друзьями
         shareText.addEventListener('click', () => {
-            tg.showShareMenu({
-                message: "Присоединяйтесь к моему Pomodoro таймеру!",
-                disable_notification: false
-            }).then(() => {
-                console.log('Share menu opened');
-            }).catch((err) => {
-                console.error('Error opening share menu', err);
-            });
+            window.open(
+                'https://t.me/share/url?url=https://your-app-link.com&text=Попробуй этот Focus Timer!',
+                '_blank'
+            );
         });
 
         controlBtn.addEventListener('click', () => {
