@@ -176,10 +176,19 @@
 
         // Поделиться с друзьями
         shareText.addEventListener('click', () => {
-            tg.showShareMenu({
-                message: "Присоединяйтесь к моему Pomodoro таймеру!",
-                disable_notification: false
-            });
+            // Проверка готовности Web App
+            if (tg) {
+                tg.showShareMenu({
+                    message: "Присоединяйтесь к моему Pomodoro таймеру!",
+                    disable_notification: false
+                }).then(() => {
+                    console.log('Share menu opened');
+                }).catch((err) => {
+                    console.error('Error opening share menu', err);
+                });
+            } else {
+                alert("Telegram Web App is not ready");
+            }
         });
 
         controlBtn.addEventListener('click', () => {
