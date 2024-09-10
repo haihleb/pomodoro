@@ -4,26 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Focus Timer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Все ваши стили остаются такими же */
-        body {
-            font-family: 'Manrope', sans-serif;
-            text-align: center;
-            padding: 20px;
-            background-color: rgb(0, 0, 0);
-            color: white;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-            overflow-y: hidden;
-            margin-top: -132px;
-            padding-top: 132px;
-        }
-        /* Дополнительные стили для кнопки */
+        /* Ваши стили остаются прежними */
         #shareBtn {
             padding: 10px 40px;
             font-size: 16px;
@@ -50,40 +33,17 @@
         
         <!-- Кнопка для шеринга -->
         <button id="shareBtn">Поделиться с друзьями</button>
-
-        <!-- Статистика -->
-        <div class="stat-container">
-            <div class="stat-label">Focus sessions</div>
-            <div class="stat-row" id="focus-stat-row">
-                <div class="stat-box"><div class="stat-fill" id="focus-box-1"></div></div>
-                <div class="stat-box"><div class="stat-fill" id="focus-box-2"></div></div>
-                <div class="stat-box"><div class="stat-fill" id="focus-box-3"></div></div>
-                <div class="stat-box"><div class="stat-fill" id="focus-box-4"></div></div>
-            </div>
-            <div class="stat-label">Shakes</div>
-            <div class="stat-row" id="break-stat-row">
-                <div class="stat-box"><div class="stat-fill" id="break-box-1"></div></div>
-                <div class="stat-box"><div class="stat-fill" id="break-box-2"></div></div>
-                <div class="stat-box"><div class="stat-fill" id="break-box-3"></div></div>
-                <div class="stat-box"><div class="stat-fill" id="break-box-4"></div></div>
-            </div>
-        </div>
     </div>
     
-    <audio id="radio"></audio>
-    <audio id="shakeup-sound" src="https://example.com/shakeup.mp3"></audio>
-
     <script>
-        // Весь ваш существующий JavaScript для таймера
+        // Подключение Web App API
+        Telegram.WebApp.ready();
 
-        // Добавляем событие для кнопки "Поделиться"
+        // Добавляем обработчик для кнопки "Поделиться"
         const shareBtn = document.getElementById('shareBtn');
         shareBtn.addEventListener('click', () => {
-            const url = "https://t.me/share/url?url=https://haihleb.github.io/pomodoro/&text=Попробуй этот Pomodoro таймер!";
-            window.open(url, '_blank');
+            Telegram.WebApp.openTelegramLink("https://t.me/share/url?url=https://haihleb.github.io/pomodoro/&text=Попробуй этот Pomodoro таймер!");
         });
-
-        // Сюда идет ваш код для таймера
     </script>
 </body>
 </html>
