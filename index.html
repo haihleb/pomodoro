@@ -141,111 +141,15 @@
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        let timer;
-        let timeLeft = 1500; // Инициализация времени для предотвращения NaN:NaN
-        const chillTimeLeft = 300; // 5 минут для Shake up! сессии
-        const totalFocusTime = 1500;
-        const totalChillTime = 300;
-        let currentFocusSession = 0;
-        let currentBreakSession = 0;
-        const maxSessions = 4;
-        const timerDisplay = document.getElementById('timer');
-        const controlBtn = document.getElementById('controlBtn');
-        const controlIcon = document.getElementById('controlIcon');
-        const controlText = document.getElementById('controlText');
-        const muteText = document.getElementById('muteText');
-        const radio = document.getElementById('radio');
-        const shakeupSound = document.getElementById('shakeup-sound');
-        const sessionTitle = document.getElementById('session-title');
-        const shareText = document.getElementById('shareText');
         const tg = window.Telegram.WebApp;
-        
-        let isMuted = false;
-        let isChillTime = false;
-        radio.volume = 0.5;
-        shakeupSound.volume = 0.5;
 
         // Показать Telegram интерфейс при загрузке
         tg.ready();
 
-        function updateTimer() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        }
-
-        // Поделиться с друзьями
-        shareText.addEventListener('click', () => {
-            window.open(
-                'https://t.me/share/url?url=https://your-app-link.com&text=Попробуй этот Focus Timer!',
-                '_blank'
-            );
+        // Функция для открытия окна выбора чатов через ссылку
+        document.getElementById('shareText').addEventListener('click', () => {
+            tg.openTelegramLink('https://t.me/share/url?url=https://t.me/@be_focused_bot&text=Присоединяйтесь к Pomodoro таймеру!');
         });
-
-        controlBtn.addEventListener('click', () => {
-            if (controlText.textContent === 'Skip') {
-                clearInterval(timer);
-                endChillSession(); // Пропуск Shake up! сессии
-            } else if (controlText.textContent === 'Start') {
-                startFocusSession();
-            } else if (controlText.textContent === 'Stop') {
-                stopFocusSession();
-            }
-        });
-
-        muteText.addEventListener('click', () => {
-            isMuted = !isMuted;
-            radio.muted = isMuted;
-            shakeupSound.muted = isMuted;
-            muteText.textContent = isMuted ? 'Unmute Lofi' : 'Mute Lofi';
-        });
-
-        // Инициализация при загрузке страницы
-        resetFocusSession(); 
-
-        function startFocusSession() {
-            clearInterval(timer);
-            timeLeft = totalFocusTime;
-            sessionTitle.textContent = '👩🏼‍💻 Focus';
-            updateTimer();
-            radio.src = "https://a7.asurahosting.com:6580/radio.mp3";
-            radio.play();
-            timer = setInterval(() => {
-                timeLeft--;
-                updateTimer();
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    endFocusSession();
-                }
-            }, 1000);
-            muteText.style.visibility = 'visible';
-            controlIcon.textContent = '⏹';
-            controlText.textContent = 'Stop';
-        }
-
-        function stopFocusSession() {
-            clearInterval(timer);
-            radio.pause();
-            const percentage = (timeLeft / totalFocusTime) * 100;
-            currentFocusSession = (currentFocusSession % maxSessions) + 1;
-            updateStatBox(`focus-box-${currentFocusSession}`, 100 - percentage);
-            startShakeUpSession();
-        }
-
-        function updateStatBox(boxId, percentage) {
-            const box = document.getElementById(boxId);
-            box.style.width = `${percentage}%`;
-        }
-
-        function resetFocusSession() {
-            isChillTime = false;
-            controlIcon.textContent = '▶️';
-            controlText.textContent = 'Start';
-            muteText.style.visibility = 'visible';
-            sessionTitle.textContent = '👩🏼‍💻 Focus';
-            timeLeft = totalFocusTime;
-            updateTimer();
-        }
     </script>
 </body>
 </html>
